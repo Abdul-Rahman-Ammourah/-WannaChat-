@@ -8,7 +8,7 @@ import Signup from "./Pages/Login&Signup";
 import UnderCon from "./Pages/Under-Construction";
 import CreateAccount from "./Pages/CreateAccount";
 import Contacts from "./Pages/Contacts";
-
+import ChatPage from "./Pages/Messaging";
 
 const Stack = createNativeStackNavigator();
 
@@ -26,6 +26,7 @@ export default function App() {
         <Stack.Screen name="UnderCon" component={UnderCon} />
         <Stack.Screen name="CreateAccount" component={CreateAccount} />
         <Stack.Screen name="Contacts" component={Contacts} />
+        <Stack.Screen name="ChatPage" component={ChatPage} />
       </Stack.Navigator>
     </NavigationContainer>
     

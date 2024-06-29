@@ -8,7 +8,7 @@ import SettingsIcon from '../assets/Photos/Settings.png';
 import checkUsername from '../ValidationChecks/UsernameCheck';
 const ContactItem = ({ contact, navigation }) => (
 
-  <TouchableOpacity onPress={null}>
+  <TouchableOpacity onPress={() => navigation.navigate('ChatPage')}>
     <View style={styles.contactItem}>
 
       <TouchableOpacity onLongPress={() => navigation.navigate('UnderCon')}>
