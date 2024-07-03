@@ -1,9 +1,0 @@
-[package]
-name = "BackEnd"
-version = "0.1.0"
-edition = "2021"
-
-[dependencies]
-mongodb = "3.0.0"
-tokio = { version = "1.0", features = ["full"] }
-serde = { version = "1.0", features = ["derive"] }
