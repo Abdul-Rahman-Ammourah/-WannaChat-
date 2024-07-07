@@ -1,6 +1,6 @@
 import React,{useState,useEffect} from 'react';
 import { StyleSheet, Text, View, TouchableOpacity,Image, TextInput } from 'react-native';
-import LottieView from 'lottie-react-native';
+// import LottieView from 'lottie-react-native';
 //Images
 import logo from '../Assets/Photos/Logo.png';
 //Animation
@@ -14,7 +14,7 @@ export default function Register ({ navigation }) {
       <View style={styles.logoContainer}>
         <Image source={logo} style={styles.logo} ></Image>
       </View>
-
+      
       <Text style={styles.subtitle}>Login or create a new account</Text>
 
       <View style={styles.inputContainer}> 
@@ -35,12 +35,7 @@ export default function Register ({ navigation }) {
         </TouchableOpacity>
       </View>
 
-    <LottieView
-      source={loading}
-      style={{width: "100%", height: "100%"}}
-      autoPlay
-      loop
-    />
+    
       
       
     </View>

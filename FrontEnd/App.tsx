@@ -13,7 +13,10 @@ const Stack = createNativeStackNavigator();
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Welcome" screenOptions={{ headerShown: false,animation:"fade_from_bottom" }}>
+      <Stack.Navigator 
+          initialRouteName="Welcome" 
+          screenOptions={{ headerShown: false,animation:"fade_from_bottom" }}>
+            
         <Stack.Screen name="Welcome" component={Welcome} />
         <Stack.Screen name="CreateAnAccount" component={CreateAnAccount} />
         <Stack.Screen name="Registration" component={Registration} />
