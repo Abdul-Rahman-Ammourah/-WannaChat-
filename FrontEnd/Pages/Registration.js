@@ -1,143 +1,92 @@
-import React from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput } from "react-native";
-// Designs
-import Upperdesign from '../Assets/Designs/UpperDesign.png'
-import Lowerdesign from '../Assets/Designs/LowerDesign.png'
-// Title
-import logo from '../Assets/Photos/Logo2.png'
+import React from 'react';
+import { StyleSheet, Text, View, TouchableOpacity,Image, TextInput } from 'react-native';
 
-export default function Registration({ navigation }) {
-    return (
-        <View style={styles.container}>
-            <View style={styles.innerContainer}>
-                <View style={styles.Header}>
-                    <Image source={Upperdesign} style={styles.ImageHeader} />
-                </View>
+//Images
+import logo from '../Assets/Photos/Logo.png';
 
-                <View style={styles.Content}>
-                    <Image source={logo} style={styles.ContentTitle} />
-                    <Text style={styles.ContentTextMain}>Login or create an account</Text>
-                    
-                    <TextInput
-                        style={styles.ContentTextInput}
-                        placeholder="Email" 
-                        placeholderTextColor="rgba(0, 0, 0, 0.25)"
-                    />
-                                
-                    <TextInput
-                        style={styles.ContentTextInput}
-                        placeholder="Password" 
-                        placeholderTextColor="rgba(0, 0, 0, 0.25)"
-                        secureTextEntry // Ensures that the password is hidden
-                    />
+export default function Register ({ navigation }) {
+  return (
+    <View style={styles.container}>
 
-                    <TouchableOpacity style={styles.ContentButton}>
-                        <Text style={styles.ContentTextSub}>Login</Text>
-                    </TouchableOpacity>
+      <View style={styles.logoContainer}>
+        <Image source={logo} style={styles.logo} ></Image>
+      </View>
 
-                    <TouchableOpacity style={styles.ContentButton} onPress={() => navigation.navigate('CreateAnAccount')}>
-                        <Text style={styles.ContentTextSub}>Create an account</Text>
-                    </TouchableOpacity>
+      <Text style={styles.subtitle}>Login or create a new account</Text>
 
-                    <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
-                        <Text style={styles.GoBackText}>Go back</Text>
-                    </TouchableOpacity>
+      <View style={styles.inputContainer}> 
+        <TextInput placeholder='Email' placeholderTextColor={"rgba(0, 0, 0, 0.5)"}></TextInput>
+      </View>
+      <View style={styles.inputContainer}> 
+        <TextInput placeholder='Password' placeholderTextColor={"rgba(0, 0, 0, 0.5)"}></TextInput>
+      </View>
 
-                </View>
+      <View>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+      </View>
+      <View>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CreateAnAccount')}>
+          <Text style={styles.buttonText}>Create an account</Text>
+        </TouchableOpacity>
+      </View>
 
-                <View style={styles.Footer}>
-                    <Image source={Lowerdesign} style={styles.ImageFooter} />
-                </View>
-            </View>
-        </View>
-    )
-}
+      
+      
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#A4B588',
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    innerContainer: {
-        width: '90%',
-        height: '95%',
-        borderRadius: 25,
-        backgroundColor: '#fff',
-        flexDirection: 'column',
-        justifyContent: 'space-between',  // Ensures that the Header and Footer are fixed
-    },
-    Header: {
-        alignItems: 'center',
-        justifyContent: 'flex-start',
-        borderTopRightRadius: 20,
-        borderTopLeftRadius: 20,
-        overflow: 'hidden', // Ensures child elements respect border radius
-    },
-    ImageHeader: {
-        width: '100%',
-        height: undefined,
-        aspectRatio: 6.56,
-        resizeMode: 'contain',
-    },
-    Content: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    ContentTitle: {
-        
-        resizeMode: 'contain',
-    },
-    ContentTextMain:{
-        textAlign: 'center',
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginTop: 20
-    },
-    ContentTextInput:{
-        paddingLeft: 14,
-        textAlign: 'left',
-        fontSize: 18,
-        width: 250,
-        borderRadius: 22,
-        fontWeight: 'bold',
-        backgroundColor: '#A4B588',
-        marginTop: 20,
-    },
-    ContentTextSub:{
-        textAlign: 'center',
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    ContentButton:{
-        marginTop: 20,
-        width: 250,
-        borderRadius: 22,
-        backgroundColor: '#A4B588',
-        padding: 10,
-        alignItems: 'center',
-    },
-    Footer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderBottomRightRadius: 20,
-        borderBottomLeftRadius: 20,
-        overflow: 'hidden', // Ensures child elements respect border radius
-    },
-    ImageFooter: {
-        width: '101%',
-        height: undefined,
-        aspectRatio: 6.989,
-        resizeMode: 'contain',
-    },
-    GoBackText: {
-        color: "black",
-        fontWeight: "bold",
-        backgroundColor: "#A4B588",
-        marginTop: 20,
-        padding: 10,
-        borderRadius: 22,
-    }
+ container: {
+    flex: 1,
+    backgroundColor: '#E0F7FA',
+    alignItems: 'center',
+    justifyContent: 'flex-start', // Align items to the top
+    paddingTop: 60, // Adjust this value as needed
+  },
+  logoContainer: {
+    marginBottom: 40,
+  },
+  logo: {
+    width: 200, // Set a specific width
+    height: 200, // Set a specific height
+    resizeMode: 'contain',
+  },
+  subtitle: {
+    fontSize: 20,
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#000',
+  },
+  createdBy: {
+    fontSize: 18,
+    marginBottom: 40,
+    textAlign: 'center',
+    color: '#000',
+  },
+  button: {
+    width:250,
+    backgroundColor: '#6495ED', // Blue color for the button
+    padding: 10,
+    borderRadius: 5,
+    marginTop:10
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  inputContainer:{
+    backgroundColor:"#6495ED",
+    width:250,
+    borderRadius:5,
+    marginTop:10,
+    marginBottom:10,
+    paddingLeft:10
+  },
+  input:{
+    backgroundColor:"#6495ED"
+  }
 });

@@ -1,16 +1,101 @@
-import React from "react";
-import { View,Text,TouchableOpacity } from "react-native";
+import React,{useState,useEffect} from 'react';
+import { StyleSheet, Text, View, TouchableOpacity,Image, TextInput } from 'react-native';
+import LottieView from 'lottie-react-native';
+//Images
+import logo from '../Assets/Photos/Logo.png';
+//Animation
+import loading from '../Assets/Animations/Loading.json';
 
 
-export default function CreateAnAccount({ navigation }) {
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text >Create an account</Text>
+export default function Register ({ navigation }) {
+  return (
+    <View style={styles.container}>
 
+      <View style={styles.logoContainer}>
+        <Image source={logo} style={styles.logo} ></Image>
+      </View>
 
-            <TouchableOpacity onPress={() => navigation.navigate('Welcome')}>
-                        <Text style={{color:"black",fontWeight:"bold",backgroundColor:"#A4B588",marginTop:20}}>Go back</Text>
-            </TouchableOpacity>
-        </View>
-    );
-}
+      <Text style={styles.subtitle}>Login or create a new account</Text>
+
+      <View style={styles.inputContainer}> 
+        <TextInput placeholder='Email' placeholderTextColor={"rgba(0, 0, 0, 0.5)"}></TextInput>
+      </View>
+      <View style={styles.inputContainer}> 
+        <TextInput placeholder='Password' placeholderTextColor={"rgba(0, 0, 0, 0.5)"}></TextInput>
+      </View>
+
+      <View>
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Login</Text>
+        </TouchableOpacity>
+      </View>
+      <View>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CreateAnAccount')}>
+          <Text style={styles.buttonText}>Create an account</Text>
+        </TouchableOpacity>
+      </View>
+
+    <LottieView
+      source={loading}
+      style={{width: "100%", height: "100%"}}
+      autoPlay
+      loop
+    />
+      
+      
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+ container: {
+    flex: 1,
+    backgroundColor: '#E0F7FA',
+    alignItems: 'center',
+    justifyContent: 'flex-start', // Align items to the top
+    paddingTop: 60, // Adjust this value as needed
+  },
+  logoContainer: {
+    marginBottom: 40,
+  },
+  logo: {
+    width: 200, // Set a specific width
+    height: 200, // Set a specific height
+    resizeMode: 'contain',
+  },
+  subtitle: {
+    fontSize: 20,
+    marginBottom: 20,
+    textAlign: 'center',
+    color: '#000',
+  },
+  createdBy: {
+    fontSize: 18,
+    marginBottom: 40,
+    textAlign: 'center',
+    color: '#000',
+  },
+  button: {
+    width:250,
+    backgroundColor: '#6495ED', // Blue color for the button
+    padding: 10,
+    borderRadius: 5,
+    marginTop:10
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  inputContainer:{
+    backgroundColor:"#6495ED",
+    width:250,
+    borderRadius:5,
+    marginTop:10,
+    marginBottom:10,
+    paddingLeft:10
+  },
+  input:{
+    backgroundColor:"#6495ED"
+  }
+});
