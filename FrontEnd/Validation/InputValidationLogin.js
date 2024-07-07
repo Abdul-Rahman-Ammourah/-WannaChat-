@@ -28,11 +28,7 @@ export const PasswordVali = (pass) => {
     return { isValid, messages };
   };
   
-const UsernameVali = (nameI) => {
-    const Regix = /^[a-zA-Z0-9_-]{3,16}$/
-    return Regix.test(nameI)
-}
-export default function InputValidation (props) {
-    const {mail,pass,nameI} = props
-
+export default function InputValidation (mail, pass) {
+    const {isValid, messages} = PasswordVali(pass)
+    return EmailVali(mail) && isValid
 }

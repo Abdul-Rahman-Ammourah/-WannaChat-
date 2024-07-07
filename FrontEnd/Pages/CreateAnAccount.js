@@ -1,13 +1,27 @@
-import React,{useState,useEffect} from 'react';
-import { StyleSheet, Text, View, TouchableOpacity,Image, TextInput } from 'react-native';
-// import LottieView from 'lottie-react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Image, TextInput } from 'react-native';
 //Images
 import logo from '../Assets/Photos/Logo.png';
 //Animation
-import loading from '../Assets/Animations/Loading.json';
 
 
-export default function Register ({ navigation }) {
+export default function Register({ navigation }) {
+  
+  const [user, setUser] = useState({
+    email: '',
+    password: '',
+    username: '',
+    confirmPassword: '',
+  });
+
+  const [stats, setStats] = useState({
+    validcomfirmPassword: true,
+  });
+
+  useEffect(() => {
+    setStats({ ...stats, validcomfirmPassword: user.password === user.confirmPassword });
+  }, [user.confirmPassword, user.password]);
+
   return (
     <View style={styles.container}>
 
@@ -18,12 +32,34 @@ export default function Register ({ navigation }) {
       <Text style={styles.subtitle}>Login or create a new account</Text>
 
       <View style={styles.inputContainer}> 
-        <TextInput placeholder='Email' placeholderTextColor={"rgba(0, 0, 0, 0.5)"}></TextInput>
+        <TextInput
+          placeholder='Email'
+          placeholderTextColor={"rgba(0, 0, 0, 0.5)"}
+          keyboardType='email-address'
+          value={user.email}
+          onChangeText={(text) => setUser({ ...user, email: text })}
+        />
       </View>
       <View style={styles.inputContainer}> 
-        <TextInput placeholder='Password' placeholderTextColor={"rgba(0, 0, 0, 0.5)"}></TextInput>
+        <TextInput
+          placeholder='Password'
+          placeholderTextColor={"rgba(0, 0, 0, 0.5)"}
+          secureTextEntry
+          value={user.password}
+          onChangeText={(text) => setUser({ ...user, password: text })}
+        />
       </View>
-
+      {!stats.validcomfirmPassword && <Text style={styles.errorText}>Passwords do not match</Text>}
+      <View style={stats.validcomfirmPassword ? styles.inputContainer : styles.inputContainerInvalid}> 
+        <TextInput
+          placeholder='Confirm Password'
+          placeholderTextColor={"rgba(0, 0, 0, 0.5)"}
+          secureTextEntry
+          value={user.confirmPassword}
+          onChangeText={(text) => setUser({ ...user, confirmPassword: text })}
+        />
+      </View>
+      
       <View>
         <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Login</Text>
@@ -33,11 +69,11 @@ export default function Register ({ navigation }) {
         <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CreateAnAccount')}>
           <Text style={styles.buttonText}>Create an account</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Welcome')}>
+          <Text style={styles.buttonText}>backdoor</Text>
+        </TouchableOpacity>
       </View>
 
-    
-      
-      
     </View>
   );
 };
@@ -45,7 +81,7 @@ export default function Register ({ navigation }) {
 const styles = StyleSheet.create({
  container: {
     flex: 1,
-    backgroundColor: '#E0F7FA',
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'flex-start', // Align items to the top
     paddingTop: 60, // Adjust this value as needed
@@ -89,6 +125,20 @@ const styles = StyleSheet.create({
     marginTop:10,
     marginBottom:10,
     paddingLeft:10
+  },
+  inputContainerInvalid:{
+    backgroundColor:"#6495ED",
+    width:250,
+    borderRadius:5,
+    marginTop:10,
+    marginBottom:10,
+    paddingLeft:10,
+    borderWidth:1,
+    borderColor:"red"
+  },
+  errorText:{
+    color:"red",
+    fontSize:12
   },
   input:{
     backgroundColor:"#6495ED"

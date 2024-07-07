@@ -12,7 +12,7 @@ export default function Welcome ({ navigation }) {
         <Image source={logo} style={styles.logo} ></Image>
       </View>
 
-      <Text style={styles.subtitle}>Welcome to my sweet messaging app</Text>
+      <Text style={styles.subtitle}>Welcome to my secure messaging app</Text>
 
       <Text style={styles.createdBy}>Created by the one the only{'\n\n'}Abdul-Rahman Ammourah</Text>
 
@@ -27,7 +27,7 @@ export default function Welcome ({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#E0F7FA',
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'flex-start', // Align items to the top
     paddingTop: 60, // Adjust this value as needed
