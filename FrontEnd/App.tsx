@@ -1,118 +1,114 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+// Import API functions
+import { register, login, sendMessage, getMessages } from './Pages/api';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+export default function App() {
+  const [user, setUser] = useState({ username: '', password: '' });
+  const [message, setMessage] = useState({ toUser: '', message: '' });
+  const [messages, setMessages] = useState([]);
+  const [error, setError] = useState('');
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+  const handleUserCreation = async () => {
+    try {
+      const response = await register(user.username, user.password);
+      console.log('Registration Response:', response);
+    } catch (error) {
+      console.error('Registration Error:', error);
+      setError('Registration failed');
+    }
+  };
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+  const handleLogin = async () => {
+    try {
+      const response = await login(user.username, user.password);
+      console.log('Login Response:', response);
+    } catch (error) {
+      console.error('Login Error:', error);
+      setError('Login failed');
+    }
+  };
+
+  const handleSendMessage = async () => {
+    try {
+      const response = await sendMessage(user.username, message.toUser, message.message);
+      console.log('Send Message Response:', response);
+    } catch (error) {
+      console.error('Send Message Error:', error);
+      setError('Failed to send message');
+    }
+  };
+
+  const handleGetMessages = async () => {
+    try {
+      const response = await getMessages(user.username, message.toUser);
+      setMessages(response);
+    } catch (error) {
+      console.error('Get Messages Error:', error);
+      setError('Failed to retrieve messages');
+    }
+  };
+
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
+    <View style={styles.container}>
+      {error ? <Text style={styles.error}>{error}</Text> : null}
+
+      <TextInput
+        style={styles.input}
+        placeholder="Username"
+        value={user.username}
+        onChangeText={(text) => setUser({ ...user, username: text })}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        value={user.password}
+        onChangeText={(text) => setUser({ ...user, password: text })}
+        secureTextEntry
+      />
+      <Button title="Register" onPress={handleUserCreation} />
+      <Button title="Login" onPress={handleLogin} />
+
+      <TextInput
+        style={styles.input}
+        placeholder="To User"
+        value={message.toUser}
+        onChangeText={(text) => setMessage({ ...message, toUser: text })}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Message"
+        value={message.message}
+        onChangeText={(text) => setMessage({ ...message, message: text })}
+      />
+      <Button title="Send Message" onPress={handleSendMessage} />
+      <Button title="Get Messages" onPress={handleGetMessages} />
+
+      <FlatList
+        data={messages}
+        keyExtractor={(item) => item.timestamp.toString()}
+        renderItem={({ item }) => (
+          <View>
+            <Text>{item.from} to {item.to}: {item.content}</Text>
+          </View>
+        )}
+      />
     </View>
   );
 }
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    padding: 20,
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  input: {
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 10,
   },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  error: {
+    color: 'red',
   },
 });
-
-export default App;
