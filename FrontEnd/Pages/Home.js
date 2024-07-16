@@ -7,8 +7,7 @@ import Settings from "../Assets/Icons/Settings.png";
 //Images
 import filePic from "../Assets/Photos/MePhoto.jpg";
 //Navigation bar
-import Footernav from './Navigationfooter';
-
+import Footernav from "./Navigationfooter";
 export default function Home({ navigation }) {
     const [user, setUser] = useState([{
         ProfilePic: filePic,
@@ -69,7 +68,7 @@ export default function Home({ navigation }) {
                 </FlatList>
 
                 <TouchableOpacity style={styles.button} onPress={newuser}>
-                    <Text style={styles.buttonText}>Backdoor</Text>
+                    <Text style={styles.buttonText}>Add user</Text>
                 </TouchableOpacity>
             </View>
 

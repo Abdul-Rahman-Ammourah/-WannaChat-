@@ -1,25 +1,41 @@
 import React from 'react';
-import { StyleSheet, Text, View, TouchableOpacity,Image } from 'react-native';
+import { View, StyleSheet, Image, Text, Animated } from 'react-native';
 
-//Images
+//Logo
 import logo from '../Assets/Photos/Logo.png';
 
-export default function Welcome ({ navigation }) {
+//CustomComponents
+import Spacer from '../CustomComponent/spacer';
+
+const Welcome = ({ navigation }) => {
   return (
     <View style={styles.container}>
+      <View style={styles.card}>
 
-      <View style={styles.logoContainer}>
-        <Image source={logo} style={styles.logo} ></Image>
+        <View style={styles.logoContainer}>
+          <Image source={logo} style={styles.logo} />
+        </View>
+
+        <Spacer size={45} />
+        
+        <Text style={styles.title}>Welcome to my sweet secure {'\n'} messaging app</Text>
+
+        <Spacer size={50} />
+
+        <Text style={styles.subTitle}>Created by Abdul-Rahman Ammourah</Text>
+
+        <Spacer size={50} />
+
+        <Text style={styles.subTitle}>Get started</Text>
+
+        <Spacer size={45} />
+
+        <View style={styles.buttonContainer}>
+          <Text style={styles.buttonText} onPress={() => navigation.navigate('Login')}>Login</Text>
+          <Text style={styles.buttonText} onPress={() => navigation.navigate('Register')}>Register</Text>
+        </View>
+
       </View>
-
-      <Text style={styles.subtitle}>Welcome to my secure messaging app</Text>
-
-      <Text style={styles.createdBy}>Created by the one the only{'\n\n'}Abdul-Rahman Ammourah</Text>
-
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Registration')}>
-        <Text style={styles.buttonText}>Get started</Text>
-      </TouchableOpacity>
-      
     </View>
   );
 };
@@ -27,41 +43,71 @@ export default function Welcome ({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'flex-start', // Align items to the top
-    paddingTop: 60, // Adjust this value as needed
+    backgroundColor: '#7B61FF', // The background color you provided in the image
+  },
+  card: {
+    width: '90%', // Adjust the width as needed
+    height: '95%', // Adjust the height as needed
+    backgroundColor: 'white',
+    borderRadius: 20, // This will create the rounded corners
+    shadowColor: '#000', // Add shadow if needed
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 2, // Add elevation for Android shadow
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingTop: 75,
   },
   logoContainer: {
-    marginBottom: 40,
+    borderRadius: 20,
+    paddingTop: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#7B61FF',
+    height: 125,
+    width: 175,
+    marginBottom: 20,
   },
   logo: {
-    width: 200, // Set a specific width
-    height: 200, // Set a specific height
-    resizeMode: 'contain',
+    width: 150,
+    height: 175,
+    resizeMode: 'contain', 
+    
   },
-  createdBy: {
-    fontSize: 18,
-    marginBottom: 40,
-    textAlign: 'center',
-    color: '#000',
-    fontWeight: 'bold',
-  },
-  subtitle: {
+  title:{
     fontSize: 20,
-    marginBottom: 20,
-    textAlign: 'center',
+    fontWeight: 'bold',
     color: '#000',
+    textAlign: 'center',
+    fontFamily: 'Jungle, sans-serif',
   },
-  button: {
-    backgroundColor: '#6495ED', // Blue color for the button
-    padding: 10,
-    borderRadius: 5,
-    top: 45
+  subTitle:{
+    fontSize: 16,
+    color: '#000',
+    textAlign: 'center',
+    marginBottom: 20,
+    fontFamily: 'Jungle, sans-serif',
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '80%',
   },
   buttonText: {
-    color: 'white',
     fontSize: 16,
+    fontWeight: 'bold',
+    color: '#fff',
     textAlign: 'center',
+    padding: 10,
+    backgroundColor: '#7B61FF',
+    borderRadius: 10,
+    width: '45%',
+    fontFamily: 'Jungle, sans-serif',
   },
 });
+
+export default Welcome;

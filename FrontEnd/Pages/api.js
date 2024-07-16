@@ -5,9 +5,9 @@ const api = axios.create({
   timeout: 10000,  // Optional: Set a timeout for requests
 });
 
-export const register = async (username, password) => {
+export const register = async (email,username, password) => {
   try {
-    const response = await api.post('/register', { username, password });
+    const response = await api.post('/register', {email, username, password });
     return response.data;
   } catch (error) {
     console.error('Register Error:', error.message);
@@ -15,9 +15,9 @@ export const register = async (username, password) => {
   }
 };
 
-export const login = async (username, password) => {
+export const login = async (email, password) => {
   try {
-    const response = await api.post('/login', { username, password });
+    const response = await api.post('/login', { email, password });
     return response.data;
   } catch (error) {
     console.error('Login Error:', error.message);

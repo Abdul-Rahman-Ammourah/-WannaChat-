@@ -1,122 +1,215 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity,Image, TextInput,Alert } from 'react-native';
-
-//Images
-import logo from '../Assets/Photos/Logo.png';
-//Validation
-import Validation from '../Validation/InputValidationLogin';
-export default function Register ({ navigation }) {
-  const [stats, setStats] = useState({
-    
-  })
+import { View, StyleSheet, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+// Icons
+import openeye from '../Assets/Icons/openedEye.png';
+import closeeye from '../Assets/Icons/closedEye.png';
+// Validation
+import { RegisterValidation } from '../Validation/validation';
+//api
+import { register } from './api';
+const RegisterScreen = ({ navigation }) => {
   const [user, setUser] = useState({
     email: '',
+    username: '',
     password: '',
+    repassword: '',
   });
-  const handleLogin = () => {
-    const valid = Validation(user.email, user.password);
 
-    if (valid) {
-      Alert.alert('Login successful! \n' + user.email + '\n' + user.password);
-      navigation.navigate('Home');
+  const [stats, setStats] = useState({
+    showPass: true,
+    mailonfocus: false,
+    usernameonfocus: false,
+    passonfocus: false,
+    repassonfocus: false,
+    invalidemail: false,
+    invalidusername: false,
+    invalidpassword: false,
+    invalidRepeatPass: false,
+  });
+
+  const handleRegister = async () => {
+    const { emailV, userV, passwordV } = RegisterValidation(user.email, user.username, user.password);
+
+    if (emailV && userV && passwordV && user.password === user.repassword) {
+      try {
+        const response = await register(user.email,user.username, user.password);
+        console.log(response);
+        navigation.navigate('Home');
+        
+      } catch (error) {
+        if (error.response) {
+          // Check the error response data
+          console.error('Login Error:', error.response.data);
+          Alert.alert('Login Error', error.response.data);
+        } else {
+          // Handle network or other errors
+          Alert.alert('Login Error', 'Network Error or Server Down');
+        }
+      }
     } else {
-      Alert.alert('Login Unsuccessful!\n '+ user.email + '\n' + user.password);
+      setStats({
+        ...stats,
+        invalidemail: !emailV,
+        invalidusername: !userV,
+        invalidpassword: !passwordV,
+        invalidRepeatPass: user.password !== user.repassword,
+      });
     }
-  }
+  };
+
+  const handleRepeat = (text) => {
+    setUser({ ...user, repassword: text });
+    setStats({ ...stats, invalidRepeatPass: text !== user.password });
+  };
+
   return (
     <View style={styles.container}>
+      <Text style={styles.header}>Create your account</Text>
 
-      <View style={styles.logoContainer}>
-        <Image source={logo} style={styles.logo} ></Image>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Your email</Text>
+        <TextInput
+          style={[
+            styles.input,
+            stats.mailonfocus && styles.inputFocused,
+            stats.invalidemail && styles.inputInvalid,
+          ]}
+          placeholder="example@example.com"
+          placeholderTextColor={'rgba(0, 0, 0, 0.5)'}
+          onFocus={() => setStats({ ...stats, mailonfocus: true })}
+          onBlur={() => setStats({ ...stats, mailonfocus: false })}
+          onChangeText={(text) => setUser({ ...user, email: text })}
+        />
       </View>
 
-      <Text style={styles.subtitle}>Login or create a new account</Text>
-
-      <View style={styles.inputContainer}> 
-        <TextInput placeholder='Email' 
-                   placeholderTextColor={"rgba(0, 0, 0, 0.5)"} 
-                   keyboardType='email-address'
-                   value={user.email}
-                   onChangeText={(text) => {setUser({ ...user, email: text })}}></TextInput>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Your username</Text>
+        <TextInput
+          style={[
+            styles.input,
+            stats.usernameonfocus && styles.inputFocused,
+            stats.invalidusername && styles.inputInvalid,
+          ]}
+          placeholder="Your username"
+          placeholderTextColor={'rgba(0, 0, 0, 0.5)'}
+          onFocus={() => setStats({ ...stats, usernameonfocus: true })}
+          onBlur={() => setStats({ ...stats, usernameonfocus: false })}
+          onChangeText={(text) => setUser({ ...user, username: text })}
+        />
       </View>
 
-      <View style={styles.inputContainer}> 
-        <TextInput placeholder='Password' 
-                   placeholderTextColor={"rgba(0, 0, 0, 0.5)"}
-                   secureTextEntry
-                   value={user.password}
-                   onChangeText={(text) => {setUser({ ...user, password: text })}}></TextInput>
-      </View>
-      
-      <View>
-        <TouchableOpacity style={styles.button} onPress={handleLogin}>
-          <Text style={styles.buttonText}>Login</Text>
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Your password</Text>
+        <TextInput
+          style={[
+            styles.input,
+            stats.passonfocus && styles.inputFocused,
+            stats.invalidpassword && styles.inputInvalid,
+          ]}
+          placeholder="Make it strong"
+          secureTextEntry={stats.showPass}
+          placeholderTextColor={'rgba(0, 0, 0, 0.5)'}
+          onFocus={() => setStats({ ...stats, passonfocus: true })}
+          onBlur={() => setStats({ ...stats, passonfocus: false })}
+          onChangeText={(text) => setUser({ ...user, password: text })}
+        />
+        <TouchableOpacity onPress={() => setStats({ ...stats, showPass: !stats.showPass })}>
+          <Image source={stats.showPass ? openeye : closeeye} style={styles.icon} />
         </TouchableOpacity>
       </View>
-      <View>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('CreateAnAccount')}>
-          <Text style={styles.buttonText}>Create an account</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Home')}>
-          <Text style={styles.buttonText}>Backdoor</Text>
-        </TouchableOpacity>
+
+      <View style={styles.inputContainer}>
+        <Text style={styles.label}>Repeat password</Text>
+        <TextInput
+          style={[
+            styles.input,
+            stats.repassonfocus && styles.inputFocused,
+            stats.invalidRepeatPass && styles.inputInvalid,
+          ]}
+          placeholder="Again please"
+          secureTextEntry={true}
+          placeholderTextColor={'rgba(0, 0, 0, 0.5)'}
+          onFocus={() => setStats({ ...stats, repassonfocus: true })}
+          onBlur={() => setStats({ ...stats, repassonfocus: false })}
+          onChangeText={(text) => handleRepeat(text)}
+        />
       </View>
 
-      
-      
+      <TouchableOpacity style={styles.button} onPress={handleRegister}>
+        <Text style={styles.buttonText}>Register</Text>
+      </TouchableOpacity>
+
+      <Text style={styles.footerText}>Already have an account?</Text>
+
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.buttonText}>Log in</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
- container: {
+  container: {
     flex: 1,
-    backgroundColor: '#fff',
+    justifyContent: 'center',
     alignItems: 'center',
-    justifyContent: 'flex-start', // Align items to the top
-    paddingTop: 60, // Adjust this value as needed
+    backgroundColor: 'white',
+    paddingHorizontal: 20,
   },
-  logoContainer: {
+  header: {
+    color: '#000',
+    fontSize: 32,
+    fontWeight: 'bold',
     marginBottom: 40,
   },
-  logo: {
-    width: 200, // Set a specific width
-    height: 200, // Set a specific height
-    resizeMode: 'contain',
-  },
-  subtitle: {
-    fontSize: 20,
+  inputContainer: {
+    width: '100%',
     marginBottom: 20,
-    textAlign: 'center',
-    color: '#000',
   },
-  createdBy: {
-    fontSize: 18,
-    marginBottom: 40,
-    textAlign: 'center',
-    color: '#000',
+  label: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 5,
+  },
+  input: {
+    height: 50,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 10,
+    backgroundColor: '#f5f5f5',
+  },
+  inputFocused: {
+    borderColor: '#7B61FF',
+    backgroundColor: 'white',
+  },
+  inputInvalid: {
+    borderColor: 'red',
+    backgroundColor: '#fdd',
+  },
+  icon: {
+    position: 'absolute',
+    right: 14,
+    bottom: 15,
   },
   button: {
-    width:250,
-    backgroundColor: '#6495ED', // Blue color for the button
-    padding: 10,
-    borderRadius: 5,
-    marginTop:10
+    width: '100%',
+    height: 50,
+    backgroundColor: '#7B61FF',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
   },
   buttonText: {
     color: 'white',
+    fontSize: 18,
+  },
+  footerText: {
     fontSize: 16,
-    textAlign: 'center',
+    color: '#333',
+    marginBottom: 20,
   },
-  inputContainer:{
-    backgroundColor:"#6495ED",
-    width:250,
-    borderRadius:5,
-    marginTop:10,
-    marginBottom:10,
-    paddingLeft:10
-  },
-  input:{
-    backgroundColor:"#6495ED"
-  }
 });
+
+export default RegisterScreen;
