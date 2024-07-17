@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, StyleSheet, Image, Text, Animated } from 'react-native';
-
+import { useNavigation } from '@react-navigation/native';
 //Logo
 import logo from '../Assets/Photos/Logo.png';
 
@@ -34,6 +34,7 @@ const Welcome = ({ navigation }) => {
           <Text style={styles.buttonText} onPress={() => navigation.navigate('Login')}>Login</Text>
           <Text style={styles.buttonText} onPress={() => navigation.navigate('Register')}>Register</Text>
         </View>
+        <Text style={styles.buttonText} onPress={() => navigation.navigate('Home')}>Home</Text>
 
       </View>
     </View>

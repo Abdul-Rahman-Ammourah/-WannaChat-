@@ -1,23 +1,28 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList, Modal } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList, Modal, ImageBackground } from "react-native";
 //Icons
-import HeaderContainer from "../Assets/Icons/HeaderOptionsContainer.png";
 import Search from "../Assets/Icons/Search.png";
 import Settings from "../Assets/Icons/Settings.png";
+import addEmpty from "../Assets/Icons/addEmpty.png";
 //Images
 import filePic from "../Assets/Photos/MePhoto.jpg";
 //Navigation bar
-import Footernav from "./Navigationfooter";
-export default function Home({ navigation }) {
+import Footernav from "../Navigation/Navigationfooter";
+//Search bar
+import { SearchBar } from "@rneui/themed";
+export default function Home({navigation}) {
     const [user, setUser] = useState([{
         ProfilePic: filePic,
         username: "user",
         status: "Online",
     }]);
+    const [search, setSearch] = useState("");
 
     const RenderItem = ({ item }) => {
         return (
-            <TouchableOpacity onPress={null}>
+            // send the username to the chat page
+            <TouchableOpacity onPress={() => navigation.navigate("Chat")}> 
+            
             <View style={styles.contact}>
                 <TouchableOpacity onLongPress={null}>
                     <Image source={item.ProfilePic} style={styles.contactImage} />
@@ -46,15 +51,17 @@ export default function Home({ navigation }) {
                 <Text style={styles.Headertitle}>WannaChat</Text>
 
                 <View style={styles.headerRight}>
-                    <Image source={HeaderContainer} style={styles.ImageHeader} />
-
-                    <TouchableOpacity onPress={null}>
-                        <Image source={Search} style={styles.iconSearch} />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={null}>
-                        <Image source={Settings} style={styles.iconSettings} />
-                    </TouchableOpacity>
+                    
+                    {/* Add a search bar */}
+                    <SearchBar 
+                        placeholder="Type here..."
+                        lightTheme
+                        onChange={(text) => setSearch(text)}
+                        value={search}
+                        
+                    />
+                    
+                    
                 </View>
             </View>
 
@@ -66,15 +73,15 @@ export default function Home({ navigation }) {
                     contentContainerStyle={styles.contentList}
                     style={styles.list}>
                 </FlatList>
+                
+
 
                 <TouchableOpacity style={styles.button} onPress={newuser}>
-                    <Text style={styles.buttonText}>Add user</Text>
+                    <Image source={addEmpty} style={styles.buttonImage} />
                 </TouchableOpacity>
             </View>
 
-            <View style={styles.footer}>
-                <Footernav navigation={navigation} />
-            </View>
+            
         </View>
     );
 }
@@ -96,7 +103,7 @@ const styles = StyleSheet.create({
         paddingLeft: 10,
     },
     Headertitle: {
-        fontSize: 28,
+        fontSize: 24,
         fontWeight: "bold",
         color: "#000000",
     },
@@ -105,14 +112,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
     },
-    ImageHeader: {
-        width: 90,
-        height: 90,
-        resizeMode: "contain",
-    },
     iconSearch: {
         position: 'absolute',
-        right: 50, // Adjust this value based on your layout
+        right: 10, // Adjust this value based on your layout
         width: 22,
         height: 22,
         bottom: -10
@@ -130,13 +132,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         backgroundColor: "#A1A1A1",
         alignItems: 'center',
-        height: 75,
-        width: 350,
-        borderRadius: 25,
+        width: 395,
         padding: 10,
-        marginBottom: 5,
-        marginTop: 5,
-        },
+    },
     contactImage: {
         width: 55,
         height: 55,
@@ -160,12 +158,18 @@ const styles = StyleSheet.create({
     
     button: {
         position: 'absolute',
-        width: 100,
-        backgroundColor: '#6495ED', // Blue color for the button
+        width: 50,
+        height: 50,
+        //backgroundColor: 'black',
         padding: 10,
         borderRadius: 15,
-        bottom: 30,
-        right: 5
+        bottom: 35,
+        right: 20
+    },
+    buttonImage: {
+        width: 36,
+        height: 36,
+        resizeMode: "contain",
     },
     footer: {
         flex: 0.5,
