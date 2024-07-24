@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList, Modal, ImageBackground } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList, Modal, ImageBackground, TextInput } from "react-native";
 //Icons
 import Search from "../Assets/Icons/Search.png";
 import Settings from "../Assets/Icons/Settings.png";
@@ -45,6 +45,10 @@ export default function Home({navigation}) {
         setUser([...user, newuser]);
     };
 
+    const filteredUsers = user.filter(u =>
+        u.username.toLowerCase().includes(search.toLowerCase())
+      );
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -52,14 +56,13 @@ export default function Home({navigation}) {
 
                 <View style={styles.headerRight}>
                     
-                    {/* Add a search bar */}
-                    <SearchBar 
-                        placeholder="Type here..."
-                        lightTheme
-                        onChange={(text) => setSearch(text)}
-                        value={search}
-                        
-                    />
+                    
+                    <TextInput 
+                        style={styles.search}
+                        placeholder="Search here..."
+                        placeholderTextColor={"rgba(0, 0, 0, 0.5)"}
+                        onChangeText={setSearch}
+                        />
                     
                     
                 </View>
@@ -67,7 +70,7 @@ export default function Home({navigation}) {
 
             <View style={styles.body}>
                 <FlatList
-                    data={user}
+                    data={filteredUsers}
                     renderItem={RenderItem}
                     keyExtractor={(item) => item.username}
                     contentContainerStyle={styles.contentList}
@@ -102,15 +105,27 @@ const styles = StyleSheet.create({
         borderBottomColor: "#A1A1A1",
         paddingLeft: 10,
     },
+    search:{
+        height: 40,
+        width: 250,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        borderRadius: 10,
+        backgroundColor: '#f5f5f5',
+        marginRight: 5,
+    },
     Headertitle: {
         fontSize: 24,
         fontWeight: "bold",
         color: "#000000",
+        marginRight: 5
     },
     headerRight: {
         position: 'relative',
         flexDirection: 'row',
         alignItems: 'center',
+        
+        marginRight: 10,
     },
     iconSearch: {
         position: 'absolute',
