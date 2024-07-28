@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, StyleSheet, Image, Text, Animated } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
 //Logo
 import logo from '../Assets/Photos/Logo.png';
 
@@ -11,7 +10,6 @@ const Welcome = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.card}>
-
         <View style={styles.logoContainer}>
           <Image source={logo} style={styles.logo} />
         </View>
