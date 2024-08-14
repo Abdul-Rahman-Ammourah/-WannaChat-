@@ -1,7 +1,7 @@
 import axios from 'axios';
-
+// ngrok http --domain=peacock-electric-merely.ngrok-free.app 5291
 const api = axios.create({
-  baseURL: 'http://192.168.1.161:5291', // Your local IP address
+  baseURL: 'https://peacock-electric-merely.ngrok-free.app', // Your local IP address
   timeout: 10000,  // Optional: Set a timeout for requests
 });
 

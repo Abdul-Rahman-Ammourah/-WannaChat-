@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 10,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#D3ECFF',
   },
   inputFocused: {
     borderColor: '#7B61FF',
