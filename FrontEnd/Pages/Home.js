@@ -1,15 +1,9 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList, Modal, ImageBackground, TextInput } from "react-native";
 //Icons
-import Search from "../Assets/Icons/Search.png";
-import Settings from "../Assets/Icons/Settings.png";
 import addEmpty from "../Assets/Icons/addEmpty.png";
 //Images
 import filePic from "../Assets/Photos/MePhoto.jpg";
-//Navigation bar
-import Footernav from "../Navigation/Navigationfooter";
-//Search bar
-import { SearchBar } from "@rneui/themed";
 export default function Home({navigation}) {
     const [user, setUser] = useState([{
         ProfilePic: filePic,
@@ -62,6 +56,7 @@ export default function Home({navigation}) {
                         placeholder="Search here..."
                         placeholderTextColor={"rgba(0, 0, 0, 0.5)"}
                         onChangeText={setSearch}
+                        
                         />
                     
                     
@@ -145,10 +140,11 @@ const styles = StyleSheet.create({
     },
     contact: {
         flexDirection: 'row',
-        backgroundColor: "#A1A1A1",
+        backgroundColor: "#D3ECFF",
         alignItems: 'center',
         width: 395,
         padding: 10,
+        borderRadius: 20,
     },
     contactImage: {
         width: 55,
