@@ -8,7 +8,6 @@ import { NavProvider } from "./Navigation/NavContext";
 import Welcome from "./Pages/Welcome";
 import Home from "./Pages/Home";
 import Register from "./Pages/Registration";
-import Login from "./Pages/Login";
 import Call from "./Pages/Call";
 import Profile from "./Pages/Profile";
 import Footernav from "./Navigation/Navigationfooter";
@@ -25,7 +24,6 @@ function MainNavigator() {
       <Stack.Screen name="Welcome" component={Welcome} />
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Register" component={Register} />
-      <Stack.Screen name="Login" component={Login} />
       <Stack.Screen name="Call" component={Call} />
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Chat" component={Chat} />
@@ -41,7 +39,7 @@ export default function App() {
       <NavigationContainer
         onStateChange={(state) => {
           const currentRoute = state?.routes[state.index].name;
-          setShowFooter(currentRoute !== "Welcome" && currentRoute !== "Login" && currentRoute !== "Register");
+          setShowFooter(currentRoute !== "Welcome" && currentRoute !== "Login" && currentRoute !== "Register" && currentRoute !== "Chat");
         }}
       >
         <View style={styles.container}>

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList, Modal, ImageBackground, TextInput } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList} from "react-native";
+import { Searchbar } from "react-native-paper";
 //Icons
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import addEmpty from "../Assets/Icons/addEmpty.png";
 //Images
 import filePic from "../Assets/Photos/MePhoto.jpg";
@@ -49,17 +51,18 @@ export default function Home({navigation}) {
                 <Text style={styles.Headertitle}>WannaChat</Text>
 
                 <View style={styles.headerRight}>
-                    
-                    
-                    <TextInput 
-                        style={styles.search}
+                
+                    <Searchbar 
                         placeholder="Search here..."
-                        placeholderTextColor={"rgba(0, 0, 0, 0.5)"}
-                        onChangeText={setSearch}
-                        
-                        />
-                    
-                    
+                        placeholderTextColor={'rgba(0, 0, 0, 0.5)'}
+                        onChangeText={setSearch} 
+                        style={styles.search}
+                        inputStyle={styles.input}
+                    />
+
+                    <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+                        <Icon name="account-circle" size={35} color="black" />
+                    </TouchableOpacity>
                 </View>
             </View>
 
@@ -102,12 +105,7 @@ const styles = StyleSheet.create({
     },
     search:{
         height: 40,
-        width: 250,
-        borderColor: '#ccc',
-        borderWidth: 1,
-        borderRadius: 10,
-        backgroundColor: '#f5f5f5',
-        marginRight: 5,
+        width: 225,
     },
     Headertitle: {
         fontSize: 24,
@@ -199,5 +197,9 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 16,
         textAlign: 'center',
-    }
+    },
+    input: {
+        bottom:8,
+        fontSize: 16,
+    },
 });

@@ -102,7 +102,11 @@ const WannaChatScreen = ({ navigation }) => {
       )}
 
       <Animated.View style={[styles.buttonContainer, { transform: [{ translateY: translateMY }] }]}>
-        <Button mode="contained" onPress={() => showLogin ? handleLogin() : navigation.navigate('Register')} style={styles.button}>
+        <Button 
+          mode="contained" 
+          onPress={() => showLogin ? handleLogin() : navigation.navigate('Register')} 
+          style={styles.button}
+        >
           {showLogin ? 'Login' : 'Create an account'}
         </Button>
         <Button 
@@ -111,6 +115,13 @@ const WannaChatScreen = ({ navigation }) => {
           style={styles.button}
         >
           {showLogin ? 'Back to home' : 'Already have an account'}
+        </Button>
+        <Button 
+          mode="contained" 
+          onPress={() => navigation.navigate('Home')} 
+          style={styles.button}
+        >
+          Home
         </Button>
       </Animated.View>
       <View style={styles.footerContainer}>

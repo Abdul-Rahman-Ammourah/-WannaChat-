@@ -1,7 +1,9 @@
 import React,{useState} from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions, Modal, FlatList, ScrollView } from 'react-native';
 import MePhoto from '../Assets/Photos/MePhoto.jpg';
-export default function App ()  {
+//Icons
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+export default function Profile ({navigation})  {
     const [showContent1, setshowContent1] = useState(false);
     const [showContent2, setshowContent2] = useState(false);
     const [showContent3, setshowContent3] = useState(false);
@@ -9,6 +11,9 @@ export default function App ()  {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconContainer}>
+          <Icon name="arrow-left" size={30} color="white"/>
+        </TouchableOpacity>
         <Image
           source={MePhoto}
           style={styles.profileImage}
@@ -96,6 +101,12 @@ const styles = StyleSheet.create({
     padding:8,
     marginBottom:5,
     borderRadius:12,
+  },
+  iconContainer: {
+    position: 'absolute',
+    left: 16,
+    top: 16,
+    zIndex: 1,
   },
 });
 
