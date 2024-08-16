@@ -58,6 +58,7 @@ export default function Home({navigation}) {
                         onChangeText={setSearch} 
                         style={styles.search}
                         inputStyle={styles.input}
+                        onIconPress={() => console.log('Search icon pressed')}
                     />
 
                     <TouchableOpacity onPress={() => navigation.navigate("Profile")}>

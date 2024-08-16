@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, KeyboardAvoidingView, Platform } from "react-native";
-// Icons
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function Chat({ navigation }) {
@@ -25,6 +24,17 @@ export default function Chat({ navigation }) {
 
     return (
         <View style={styles.container}>
+            {/* Header */}
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Icon name="arrow-left" size={28} color="#000" />
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>Username</Text>
+                <TouchableOpacity onPress={() => console.log('Camera pressed')}>
+                    <Icon name="camera" size={28} color="#000" />
+                </TouchableOpacity>
+            </View>
+
             <FlatList
                 data={messages}
                 renderItem={renderItem}
@@ -55,6 +65,20 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff",
         padding: 10,
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingVertical: 10,
+        paddingHorizontal: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
+    },
+    headerTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#000',
     },
     messagesContainer: {
         paddingBottom: 10,

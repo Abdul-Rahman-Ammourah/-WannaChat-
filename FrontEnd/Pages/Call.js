@@ -1,32 +1,90 @@
-import React from "react";
-import { View,Text,StyleSheet,TouchableOpacity,Image } from "react-native";
-//icons
-import Search from "../Assets/Icons/Search.png";
-export default function Call() {
+import React, { useState } from "react";
+import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList } from "react-native";
+import { Searchbar } from "react-native-paper";
+// Icons
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+// Images
+import filePic from "../Assets/Photos/MePhoto.jpg";
+import addEmpty from "../Assets/Icons/addEmpty.png";
+
+export default function Call({ navigation }) {
+    const [calls, setCalls] = useState([{
+        ProfilePic: filePic,
+        username: "user",
+        callStatus: "Missed Call",
+    }]);
+    const [search, setSearch] = useState("");
+
+    const RenderItem = ({ item }) => {
+        return (
+            // send the username to the call page
+            <TouchableOpacity onPress={() => navigation.navigate("Call")}> 
+                <View style={styles.contact}>
+                    <TouchableOpacity onLongPress={null}>
+                        <Image source={item.ProfilePic} style={styles.contactImage} />
+                    </TouchableOpacity>
+                    <View style={styles.contactText}>
+                        <Text style={styles.contactName}>{item.username}</Text>
+                        <Text style={styles.contactStatus}>{item.callStatus}</Text>
+                    </View>
+                    <Icon name="phone" size={28} color="green" />
+                </View>
+            </TouchableOpacity>
+        );
+    };
+
+    const newCall = () => {
+        const newCall = {
+            ProfilePic: filePic,
+            username: "Caller" + Math.floor(Math.random() * 1000),
+            callStatus: "Outgoing Call",
+        };
+        setCalls([...calls, newCall]);
+    };
+
+    const filteredCalls = calls.filter(u =>
+        u.username.toLowerCase().includes(search.toLowerCase())
+    );
+
     return (
         <View style={styles.container}>
-            <View style={styles.Header}>
-                <Text style={styles.Headertitle}>Calls</Text>
+            {/* Header */}
+            <View style={styles.header}>
+                <Text style={styles.Headertitle}>Call Logs</Text>
 
                 <View style={styles.headerRight}>
-                    
-                    {/* Add a search bar */}
+                    <Searchbar
+                        placeholder="Search calls..."
+                        placeholderTextColor={'rgba(0, 0, 0, 0.5)'}
+                        onChangeText={setSearch}
+                        style={styles.search}
+                        inputStyle={styles.input}
+                        onIconPress={() => console.log('Search icon pressed')}
+                    />
 
-                    <TouchableOpacity onPress={null}>
-                        <Image source={Search} style={styles.iconSearch} />
+                    <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+                        <Icon name="account-circle" size={35} color="black" />
                     </TouchableOpacity>
-
-                    
                 </View>
             </View>
 
-            <View style={styles.Body}>
-                <Text>Calls</Text>
-            </View>
+            {/* Call Logs List */}
+            <View style={styles.body}>
+                <FlatList
+                    data={filteredCalls}
+                    renderItem={RenderItem}
+                    keyExtractor={(item) => item.username}
+                    contentContainerStyle={styles.contentList}
+                    style={styles.list}
+                />
 
-            
+                {/* Add new call button */}
+                <TouchableOpacity style={styles.button} onPress={newCall}>
+                    <Image source={addEmpty} style={styles.buttonImage} />
+                </TouchableOpacity>
+            </View>
         </View>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
@@ -34,7 +92,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff",
     },
-    Header:{
+    header: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -44,30 +102,78 @@ const styles = StyleSheet.create({
         borderBottomColor: "#A1A1A1",
         paddingLeft: 10,
     },
+    search: {
+        height: 40,
+        width: 235,
+    },
     Headertitle: {
-        fontSize: 28,
+        fontSize: 24,
         fontWeight: "bold",
         color: "#000000",
+        marginRight: 5,
     },
     headerRight: {
+        position: 'relative',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingRight: 10,
+        marginRight: 10,
     },
-    iconSearch: {
-        width: 25,
-        height: 25,
-        resizeMode: 'contain',
-    },
-    Body:{
+    body: {
         flex: 5,
         backgroundColor: "#fff",
     },
-    Footer:{
-        flex: 0.5,
-        backgroundColor: "#fff",
-        borderTopWidth: 1,
-        borderTopColor: "#A1A1A1",
-    }
-})
+    contact: {
+        flexDirection: 'row',
+        backgroundColor: "#D3ECFF",
+        alignItems: 'center',
+        width: 395,
+        padding: 10,
+        borderRadius: 20,
+        marginBottom: 10,
+    },
+    contactImage: {
+        width: 55,
+        height: 55,
+        borderRadius: 30,
+        resizeMode: "contain",
+        marginRight: 15,
+    },
+    contactText: {
+        flex: 1,
+    },
+    contactName: {
+        fontSize: 16,
+        color: "#000000",
+        fontWeight: "bold",
+    },
+    contactStatus: {
+        fontSize: 12,
+        color: "red",
+        fontWeight: "bold",
+    },
+    button: {
+        position: 'absolute',
+        width: 50,
+        height: 50,
+        padding: 10,
+        borderRadius: 15,
+        bottom: 35,
+        right: 20,
+    },
+    buttonImage: {
+        width: 36,
+        height: 36,
+        resizeMode: "contain",
+    },
+    list: {
+        flexDirection: 'column',
+    },
+    contentList: {
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    input: {
+        bottom: 8,
+        fontSize: 16,
+    },
+});
