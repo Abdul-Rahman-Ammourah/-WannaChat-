@@ -4,7 +4,7 @@ import { View, StyleSheet, Text, TextInput, TouchableOpacity, Image } from 'reac
 import openeye from '../Assets/Icons/openedEye.png';
 import closeeye from '../Assets/Icons/closedEye.png';
 // Validation
-import { RegisterValidation } from '../Validation/validation';
+import { RegisterValidation } from '../Validation/InputValidation';
 //api
 import { register } from './api';
 //Context

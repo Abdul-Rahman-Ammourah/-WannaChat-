@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef,useContext } from 'react';
 import { View,Text, StyleSheet, Animated, Easing, TextInput, KeyboardAvoidingView, Platform, Alert } from 'react-native';
-import { LoginValidation } from '../Validation/validation';
+import { LoginValidation } from '../Validation/InputValidation';
 import { Button,TextInput as PaperTextInput } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { NavContext } from '../Navigation_Remove_Later/Context';

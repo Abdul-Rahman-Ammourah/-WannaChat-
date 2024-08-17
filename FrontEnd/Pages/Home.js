@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList, Alert, TextI
 import { Modal, Searchbar, Snackbar, Button } from "react-native-paper";
 import { getUser } from "./api";
 import { NavContext } from "../Navigation_Remove_Later/Context";
-import { EmailCheck } from "../Validation/validation";
+import { EmailCheck } from "../Validation/InputValidation";
 //Assets
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import addEmpty from "../Assets/Icons/addEmpty.png";
@@ -23,7 +23,7 @@ export default function Home({ navigation }) {
         return (
             <TouchableOpacity
                 onPress={() => {
-                    setReceiverEmail(item.email); // Adjust if needed
+                    setReceiverEmail(item.email);
                     navigation.navigate("Chat");
                 }}
             >
