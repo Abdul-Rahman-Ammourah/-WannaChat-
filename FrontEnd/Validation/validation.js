@@ -4,7 +4,9 @@ export function LoginValidation(email, password) {
     const passwordValid = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
     return emailValid && passwordValid;
 }
-
+export function EmailCheck (email){
+    return /^[a-zA-Z0-9._%+-]+@(gmail|hotmail|yahoo)\.com$/.test(email);
+}
 export function RegisterValidation(email, username, password) {
     const emailV = /^[a-zA-Z0-9._%+-]+@(gmail|hotmail|yahoo)\.com$/.test(email);
 

@@ -1,13 +1,14 @@
 import axios from 'axios';
-// ngrok http --domain=peacock-electric-merely.ngrok-free.app 5291
+
 const api = axios.create({
-  baseURL: 'https://peacock-electric-merely.ngrok-free.app', // Your local IP address
+  baseURL: 'https://peacock-electric-merely.ngrok-free.app', 
   timeout: 10000,  // Optional: Set a timeout for requests
 });
 
-export const register = async (email,username, password) => {
+// Register API
+export const register = async (email, username, password) => {
   try {
-    const response = await api.post('/register', {email, username, password });
+    const response = await api.post('/register', { email, username, password });
     return response.data;
   } catch (error) {
     console.error('Register Error:', error.message);
@@ -15,9 +16,10 @@ export const register = async (email,username, password) => {
   }
 };
 
+// Login API
 export const login = async (email, password) => {
   try {
-    const response = await api.post('/login', { email, password });
+    const response = await api.post('/Login', { email, password });
     return response.data;
   } catch (error) {
     console.error('Login Error:', error.message);
@@ -25,3 +27,39 @@ export const login = async (email, password) => {
   }
 };
 
+// Get Messages API
+export const getMessage = async (email) => {
+  try {
+    const response = await api.get('/ReceiveMessages', {
+      params: { receiverEmail: email }  // Ensure this matches the expected query param name
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Get Message Error:', error.message);
+    throw error;
+  }
+};
+
+// Send Message API
+export const sendMessage = async (fromEmail, toEmail, message) => {
+  try {
+    const response = await api.post('/SendMessage', { fromEmail, toEmail, message });
+    return response.data;
+  } catch (error) {
+    console.error('Send Message Error:', error.message);
+    throw error;
+  }
+};
+
+// Get User info 
+export const getUser = async (Email) => {
+  try{
+    const response = await api.get('/getUser', {
+      params: { email: Email }  // Ensure this matches the expected query param name
+    });
+    return response.data;
+  }catch(error){
+    console.error('Get User Error:',error)
+    throw error;
+  }
+}

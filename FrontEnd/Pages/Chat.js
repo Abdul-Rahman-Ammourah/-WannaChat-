@@ -1,18 +1,62 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef,useContext } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, KeyboardAvoidingView, Platform } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import { sendMessage, getMessage } from "./api"; // Import your API functions
+import { NavContext } from '../Navigation_Remove_Later/Context';
 export default function Chat({ navigation }) {
-    const [messages, setMessages] = useState([
-        { id: '1', text: 'Hello!', type: 'received' },
-        { id: '2', text: 'Hi there!', type: 'sent' },
-    ]);
+    const {senderEmail,receiverEmail} = useContext(NavContext);
+    const [messages, setMessages] = useState([]);  // Initialize messages as an empty array
     const [newMessage, setNewMessage] = useState("");
+    const flatListRef = useRef(null);  // Reference for FlatList
 
-    const handleSend = () => {
+    // Fetch messages when the component mounts
+    useEffect(() => {
+        const fetchMessages = async () => {
+            try {
+                const receiverEmail = senderEmail;  // Replace with actual receiver email
+                const fetchedMessages = await getMessage(receiverEmail);
+                
+                // Map the fetched messages to the correct format
+                const formattedMessages = fetchedMessages.map((msg) => ({
+                    id: msg._id,  // Assuming MongoDB returns _id
+                    text: msg.message,
+                    type: msg.fromEmail === senderEmail ? 'sent' : 'received' // Compare sender email to identify message type
+                }));
+                
+                setMessages(formattedMessages);  // Set messages without reversing
+            } catch (error) {
+                console.error("Error fetching messages:", error);
+            }
+        };
+
+        fetchMessages();
+    }, []);
+
+    const handleSend = async () => {
         if (newMessage.trim()) {
-            setMessages([...messages, { id: Date.now().toString(), text: newMessage, type: 'sent' }]);
-            setNewMessage("");
+            const messageToSend = {
+                fromEmail: senderEmail,  // Replace with actual sender email
+                toEmail: receiverEmail,  // Replace with actual receiver email
+                message: newMessage,
+            };
+
+            try {
+                // Send message to the backend
+                await sendMessage(messageToSend.fromEmail, messageToSend.toEmail, messageToSend.message);
+                
+                // Update local message state for UI
+                setMessages([
+                    ...messages,
+                    { id: Date.now().toString(), text: newMessage, type: 'sent' }
+                ]);
+
+                setNewMessage("");  // Clear the input field
+
+                // Scroll to the bottom of the list after sending the message
+                flatListRef.current?.scrollToEnd({ animated: true });
+            } catch (error) {
+                console.error("Error sending message:", error);
+            }
         }
     };
 
@@ -35,13 +79,17 @@ export default function Chat({ navigation }) {
                 </TouchableOpacity>
             </View>
 
+            {/* Message List */}
             <FlatList
+                ref={flatListRef}  // Reference to FlatList
                 data={messages}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.messagesContainer}
-                inverted
+                onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}  // Scroll to end on content change
+                onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })}  // Scroll to end on initial layout
             />
+            {/* Input field and send button */}
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.inputContainer}

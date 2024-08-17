@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef,useContext } from 'react';
 import { View,Text, StyleSheet, Animated, Easing, TextInput, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { LoginValidation } from '../Validation/validation';
 import { Button,TextInput as PaperTextInput } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-const WannaChatScreen = ({ navigation }) => {
+import { NavContext } from '../Navigation_Remove_Later/Context';
+import { login } from './api';
+export default function Welcome({ navigation }) {
+  const { setSenderEmail } = useContext(NavContext);
   const [showLogin, setShowLogin] = useState(false);
   // Animation references
   const translateY = useRef(new Animated.Value(0)).current;
@@ -50,10 +52,10 @@ const WannaChatScreen = ({ navigation }) => {
     const valid = LoginValidation(user.email, user.password);
     if (valid) {
       setStats({ ...stats, invalid: false });
-
       try {
         const response = await login(user.email, user.password);
         console.log(response);
+        setSenderEmail(user.email);
         navigation.navigate('Home');
         
       } catch (error) {
@@ -194,5 +196,3 @@ const styles = StyleSheet.create({
     color: 'black',
   },
 });
-
-export default WannaChatScreen;

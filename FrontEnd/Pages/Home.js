@@ -1,66 +1,99 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList} from "react-native";
-import { Searchbar } from "react-native-paper";
-//Icons
+import React, { useState, useContext } from "react";
+import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList, Alert, TextInput } from "react-native";
+import { Modal, Searchbar, Snackbar, Button } from "react-native-paper";
+import { getUser } from "./api";
+import { NavContext } from "../Navigation_Remove_Later/Context";
+import { EmailCheck } from "../Validation/validation";
+//Assets
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import addEmpty from "../Assets/Icons/addEmpty.png";
-//Images
 import filePic from "../Assets/Photos/MePhoto.jpg";
-export default function Home({navigation}) {
-    const [user, setUser] = useState([{
-        ProfilePic: filePic,
-        username: "user",
-        status: "Online",
-    }]);
+
+export default function Home({ navigation }) {
+    const { setReceiverEmail } = useContext(NavContext);
+    const [users, setUsers] = useState([]);
+    const [addEmail, setAddEmail] = useState("");
     const [search, setSearch] = useState("");
+    const [visible, setVisible] = useState({
+        Snackbar: false,
+        Modal: false,
+    });
 
     const RenderItem = ({ item }) => {
         return (
-            // send the username to the chat page
-            <TouchableOpacity onPress={() => navigation.navigate("Chat")}> 
-            
-            <View style={styles.contact}>
-                <TouchableOpacity onLongPress={null}>
-                    <Image source={item.ProfilePic} style={styles.contactImage} />
-                </TouchableOpacity>
-                <View style={styles.contactText}>
-                    <Text style={styles.contactName}>{item.username}</Text>
-                    <Text style={styles.contactStatus}>{item.status}</Text>
+            <TouchableOpacity
+                onPress={() => {
+                    setReceiverEmail(item.email); // Adjust if needed
+                    navigation.navigate("Chat");
+                }}
+            >
+                <View style={styles.contact}>
+                    <TouchableOpacity onLongPress={null}>
+                        <Image source={item.ProfilePic} style={styles.contactImage} />
+                    </TouchableOpacity>
+                    <View style={styles.contactText}>
+                        <Text style={styles.contactName}>{item.username}</Text>
+                    </View>
                 </View>
-            </View>
             </TouchableOpacity>
         );
     };
 
-    const newuser = () => {
-        const newuser = {
-            ProfilePic: filePic,
-            username: "WannaChat" + Math.floor(Math.random() * 1000),
-            status: "Online",
-        };
-        setUser([...user, newuser]);
+    const fetchUser = async (email) => {
+        try {
+            const response = await getUser(email);
+            if (response) {
+                const username = response.username;
+
+                const alreadyExists = users.some(user => user.username.toLowerCase() === username.toLowerCase());
+                if (!alreadyExists) {
+                    setUsers(prevUsers => [...prevUsers, { username, ProfilePic: filePic, email }]);
+                    setAddEmail(""); // Clear the input field
+                } else {
+                    setVisible({ ...visible, Snackbar: true }); // Show Snackbar if user already exists
+                }
+            }
+        } catch (error) {
+            if (error.response) {
+                console.error('Fetch User Error:', error.response.data);
+                Alert.alert('Fetch User Error', error.response.data);
+            } else {
+                Alert.alert('Fetch User Error', 'Network Error or Server Down');
+            }
+        }
     };
 
-    const filteredUsers = user.filter(u =>
-        u.username.toLowerCase().includes(search.toLowerCase())
-      );
+    const handleAddUser = () => {
+        if (addEmail.trim() === "") {
+            Alert.alert("Invalid Input", "Please enter an email address.");
+            return;
+        }
+        if(EmailCheck(addEmail)){
+            fetchUser(addEmail);
+        }else{
+            Alert.alert("Invalid Input", "Please enter a valid email address.");
+            return;
+        }
+        setVisible({ ...visible, Modal: false }); // Close the modal after adding user
+    };
+
+    const filteredUsers = users.filter(user =>
+        user.username.toLowerCase().includes(search.toLowerCase())
+    );
 
     return (
         <View style={styles.container}>
             <View style={styles.header}>
                 <Text style={styles.Headertitle}>WannaChat</Text>
-
                 <View style={styles.headerRight}>
-                
-                    <Searchbar 
+                    <Searchbar
                         placeholder="Search here..."
                         placeholderTextColor={'rgba(0, 0, 0, 0.5)'}
-                        onChangeText={setSearch} 
+                        onChangeText={setSearch}
                         style={styles.search}
                         inputStyle={styles.input}
                         onIconPress={() => console.log('Search icon pressed')}
                     />
-
                     <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
                         <Icon name="account-circle" size={35} color="black" />
                     </TouchableOpacity>
@@ -73,17 +106,44 @@ export default function Home({navigation}) {
                     renderItem={RenderItem}
                     keyExtractor={(item) => item.username}
                     contentContainerStyle={styles.contentList}
-                    style={styles.list}>
-                </FlatList>
-                
-
-
-                <TouchableOpacity style={styles.button} onPress={newuser}>
+                    style={styles.list}
+                />
+                <TouchableOpacity style={styles.button} onPress={() => setVisible({ ...visible, Modal: true })}>
                     <Image source={addEmpty} style={styles.buttonImage} />
                 </TouchableOpacity>
             </View>
-
             
+            <Modal 
+                visible={visible.Modal}
+                onDismiss={() => {setVisible({ ...visible, Modal: false }); setAddEmail("")}}
+                style={styles.modal}
+                contentContainerStyle={styles.modalContainer}
+            >
+                <View style={styles.modalContent}>
+                    <Text style={styles.modalTitle}>Add a new contact</Text>
+                    <TextInput
+                        placeholder="Enter email"
+                        value={addEmail}
+                        onChangeText={setAddEmail}
+                        style={styles.modalInput}
+                        keyboardType="email-address"
+                    />
+                    <Button mode="contained" onPress={handleAddUser} style={styles.modalButton}>
+                        Add Contact
+                    </Button>
+                </View>
+            </Modal>
+
+            <Snackbar
+                visible={visible.Snackbar}
+                onDismiss={() => setVisible({ ...visible, Snackbar: false })}
+                action={{
+                    label: 'Dismiss',
+                    onPress: () => setVisible({ ...visible, Snackbar: false }),
+                }}
+            >
+                User Already Exists
+            </Snackbar>
         </View>
     );
 }
@@ -93,7 +153,6 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff",
     },
-    
     header: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -104,7 +163,7 @@ const styles = StyleSheet.create({
         borderBottomColor: "#A1A1A1",
         paddingLeft: 10,
     },
-    search:{
+    search: {
         height: 40,
         width: 225,
     },
@@ -115,23 +174,9 @@ const styles = StyleSheet.create({
         marginRight: 5
     },
     headerRight: {
-        position: 'relative',
         flexDirection: 'row',
         alignItems: 'center',
-        
         marginRight: 10,
-    },
-    iconSearch: {
-        position: 'absolute',
-        right: 10, // Adjust this value based on your layout
-        width: 22,
-        height: 22,
-        bottom: -10
-    },
-    iconSettings: {
-        position: 'absolute',
-        right: 15, // Adjust this value based on your layout
-        bottom: -10,
     },
     body: {
         flex: 5,
@@ -160,17 +205,10 @@ const styles = StyleSheet.create({
         color: "#000000",
         fontWeight: "bold",
     },
-    contactStatus: {
-        fontSize: 12,
-        color: "green",
-        fontWeight: "bold",
-    },
-    
     button: {
         position: 'absolute',
         width: 50,
         height: 50,
-        //backgroundColor: 'black',
         padding: 10,
         borderRadius: 15,
         bottom: 35,
@@ -181,12 +219,6 @@ const styles = StyleSheet.create({
         height: 36,
         resizeMode: "contain",
     },
-    footer: {
-        flex: 0.5,
-        backgroundColor: "#fff",
-        borderTopWidth: 1,
-        borderTopColor: "#A1A1A1",
-    },
     list: {
         flexDirection: 'column',
     },
@@ -194,13 +226,43 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    buttonText: {
-        color: "#fff",
-        fontSize: 16,
-        textAlign: 'center',
-    },
     input: {
-        bottom:8,
         fontSize: 16,
+        bottom: 8,
+    },
+    modal: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 0,
+    },
+    modalContainer: {
+        backgroundColor: 'white',
+        borderRadius: 20,
+        marginHorizontal: 20,
+        marginVertical: 100,
+        padding: 20,
+    },
+    modalContent: {
+        width:300,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalTitle: {
+        color: '#000000',
+        fontSize: 22,
+        fontWeight: 'bold',
+        marginBottom: 25,
+    },
+    modalInput: {
+        backgroundColor: '#D3ECFF',
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: '#cccccc',
+        width:"90%"
+    },
+    modalButton: {
+        width: '100%',
     },
 });

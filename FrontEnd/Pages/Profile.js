@@ -1,9 +1,11 @@
-import React,{useState} from 'react';
+import React,{useContext, useState} from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions, Modal, FlatList, ScrollView } from 'react-native';
 import MePhoto from '../Assets/Photos/MePhoto.jpg';
+import { NavContext } from '../Navigation_Remove_Later/Context';
 //Icons
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 export default function Profile ({navigation})  {
+    const {senderEmail} = useContext(NavContext)
     const [showContent1, setshowContent1] = useState(false);
     const [showContent2, setshowContent2] = useState(false);
     const [showContent3, setshowContent3] = useState(false);
@@ -22,10 +24,10 @@ export default function Profile ({navigation})  {
       <View style={styles.body}>
       <ScrollView showsVerticalScrollIndicator={false}>
             <TouchableOpacity onPress={() => setshowContent1(!showContent1)} style={{ marginBottom: 5 }}>
-                <Text style={styles.title}>Small title</Text>
+                <Text style={styles.title}>Account Info</Text>
             </TouchableOpacity>
 
-               {showContent1 && (<><Text style={styles.Content}>Small title</Text>
+               {showContent1 && (<><Text style={styles.Content}>Email: {senderEmail}</Text>
                                    <Text style={styles.Content}>Small title</Text>
                                    <Text style={styles.Content}>Small title</Text>
                                    <Text style={styles.Content}>Small title</Text>

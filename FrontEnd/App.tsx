@@ -3,14 +3,14 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, StyleSheet } from "react-native";
 // Navigation
-import { NavProvider } from "./Navigation/NavContext";
+import { NavProvider } from "./Navigation_Remove_Later/Context";
 // Pages
 import Welcome from "./Pages/Welcome";
 import Home from "./Pages/Home";
 import Register from "./Pages/Registration";
 import Call from "./Pages/Call";
 import Profile from "./Pages/Profile";
-import Footernav from "./Navigation/Navigationfooter";
+import Footernav from "./Navigation_Remove_Later/Navigationfooter";
 import Chat from "./Pages/Chat";
 
 const Stack = createNativeStackNavigator();

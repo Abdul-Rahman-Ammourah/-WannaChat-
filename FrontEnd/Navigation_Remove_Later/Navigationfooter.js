@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { View, TouchableOpacity, Image, StyleSheet } from 'react-native';
-import { NavContext } from '../Navigation/NavContext';
+import { NavContext } from './Context';
 // Icons
 import callempty from "../Assets/Icons/callEmpty.png";
 import homeempty from "../Assets/Icons/homeEmpty.png";
