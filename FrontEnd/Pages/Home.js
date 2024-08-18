@@ -3,14 +3,14 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList, Alert, TextI
 import { Modal, Searchbar, Snackbar, Button } from "react-native-paper";
 import { getUser } from "./api";
 import { NavContext } from "../Navigation_Remove_Later/Context";
-import { EmailCheck } from "../Validation/InputValidation";
+import { EmailCheck } from "../Services/InputValidation";
 //Assets
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import addEmpty from "../Assets/Icons/addEmpty.png";
 import filePic from "../Assets/Photos/MePhoto.jpg";
 
 export default function Home({ navigation }) {
-    const { setReceiverEmail } = useContext(NavContext);
+    const { setReceiverEmail,setPublicKey } = useContext(NavContext);
     const [users, setUsers] = useState([]);
     const [addEmail, setAddEmail] = useState("");
     const [search, setSearch] = useState("");
@@ -44,7 +44,7 @@ export default function Home({ navigation }) {
             const response = await getUser(email);
             if (response) {
                 const username = response.username;
-
+                setPublicKey(response.publicKey);
                 const alreadyExists = users.some(user => user.username.toLowerCase() === username.toLowerCase());
                 if (!alreadyExists) {
                     setUsers(prevUsers => [...prevUsers, { username, ProfilePic: filePic, email }]);

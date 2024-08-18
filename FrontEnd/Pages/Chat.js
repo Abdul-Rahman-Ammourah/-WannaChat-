@@ -3,8 +3,10 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Keyboard
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { sendMessage, getMessage } from "./api"; // Import your API functions
 import { NavContext } from '../Navigation_Remove_Later/Context';
+//End to End encryption
+import End2End from "../Services/End2End";
 export default function Chat({ navigation }) {
-    const {senderEmail,receiverEmail} = useContext(NavContext);
+    const {senderEmail,receiverEmail,publicKey} = useContext(NavContext);
     const [messages, setMessages] = useState([]);  // Initialize messages as an empty array
     const [newMessage, setNewMessage] = useState("");
     const flatListRef = useRef(null);  // Reference for FlatList
@@ -22,7 +24,10 @@ export default function Chat({ navigation }) {
                     text: msg.message,
                     type: msg.fromEmail === senderEmail ? 'sent' : 'received' // Compare sender email to identify message type
                 }));
-                
+                const decryptedMessages = fetchedMessages.map((msg) => ({
+                    msg : End2End.decryptMessage(msg.message),
+                }))
+                console.log(decryptedMessages);
                 setMessages(formattedMessages);  // Set messages without reversing
             } catch (error) {
                 console.error("Error fetching messages:", error);
@@ -34,11 +39,14 @@ export default function Chat({ navigation }) {
 
     const handleSend = async () => {
         if (newMessage.trim()) {
+            // Encrypt the message
+            const encryptedMessage = await End2End.encryptMessage(newMessage, publicKey);
+            // Send message to the backend
             const messageToSend = {
                 fromEmail: senderEmail,  // Replace with actual sender email
                 toEmail: receiverEmail,  // Replace with actual receiver email
-                message: newMessage,
-            };
+                message: encryptedMessage,
+                }
 
             try {
                 // Send message to the backend

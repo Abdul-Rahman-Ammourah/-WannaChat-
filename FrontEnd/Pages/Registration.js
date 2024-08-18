@@ -4,13 +4,15 @@ import { View, StyleSheet, Text, TextInput, TouchableOpacity, Image } from 'reac
 import openeye from '../Assets/Icons/openedEye.png';
 import closeeye from '../Assets/Icons/closedEye.png';
 // Validation
-import { RegisterValidation } from '../Validation/InputValidation';
+import { RegisterValidation } from '../Services/InputValidation';
 //api
 import { register } from './api';
 //Context
 import { NavContext } from '../Navigation_Remove_Later/Context';
+//End to End encryption
+import End2End from '../Services/End2End';
 const RegisterScreen = ({ navigation }) => {
-  const { setSenderEmail } = useContext(NavContext);
+  const { setSenderEmail, setPublicKey } = useContext(NavContext);
   const [user, setUser] = useState({
     email: '',
     username: '',
@@ -32,10 +34,10 @@ const RegisterScreen = ({ navigation }) => {
 
   const handleRegister = async () => {
     const { emailV, userV, passwordV } = RegisterValidation(user.email, user.username, user.password);
-
     if (emailV && userV && passwordV && user.password === user.repassword) {
       try {
-        const response = await register(user.email,user.username, user.password);
+        const publickKey = await End2End.generateKey();
+        const response = await register(user.email,user.username, user.password,publickKey);
         console.log(response);
         setSenderEmail(user.email);
         navigation.navigate('Home');

@@ -1,18 +1,22 @@
 import React, { useState, useEffect, useRef,useContext } from 'react';
 import { View,Text, StyleSheet, Animated, Easing, TextInput, KeyboardAvoidingView, Platform, Alert } from 'react-native';
-import { LoginValidation } from '../Validation/InputValidation';
+import { LoginValidation } from '../Services/InputValidation';
 import { Button,TextInput as PaperTextInput } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+//Context
 import { NavContext } from '../Navigation_Remove_Later/Context';
+//API
 import { login } from './api';
+//End to End encryption
+import End2End from '../Services/End2End';
 export default function Welcome({ navigation }) {
-  const { setSenderEmail } = useContext(NavContext);
+  const { setSenderEmail, setPublicKey } = useContext(NavContext);
   const [showLogin, setShowLogin] = useState(false);
   // Animation references
   const translateY = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(0)).current;
   const translateMY = useRef(new Animated.Value(0)).current;
-
+  
   // Login form
   const [user, setUser] = useState({
     email: '',
@@ -53,11 +57,11 @@ export default function Welcome({ navigation }) {
     if (valid) {
       setStats({ ...stats, invalid: false });
       try {
-        const response = await login(user.email, user.password);
+        const publickKey = await End2End.generateKey();
+        const response = await login(user.email, user.password, publickKey);
         console.log(response);
         setSenderEmail(user.email);
         navigation.navigate('Home');
-        
       } catch (error) {
         if (error.response) {
           // Check the error response data

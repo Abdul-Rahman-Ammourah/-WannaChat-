@@ -7,7 +7,7 @@ class End2End {
     try {
       const keyPair = await RSA.generateKeys(2048); // 2048-bit RSA keys
       await Keychain.setGenericPassword('privateKey', keyPair.private); // Store private key securely
-      return { publicKey: keyPair.public, privateKey: keyPair.private };
+      return keyPair.public;
     } catch (error) {
       console.error('Key generation error:', error);
       throw error;
