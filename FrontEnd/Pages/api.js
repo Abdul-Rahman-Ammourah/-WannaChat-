@@ -6,9 +6,9 @@ const api = axios.create({
 });
 
 // Register API
-export const register = async (email, username, password,publicKey) => {
+export const register = async (email, username, password,publicKey,privateKey) => {
   try {
-    const response = await api.post('/register', { email, username, password,publicKey });
+    const response = await api.post('/Register', { email, username, password,publicKey,privateKey });
     return response.data;
   } catch (error) {
     console.error('Register Error:', error.message);
@@ -17,9 +17,9 @@ export const register = async (email, username, password,publicKey) => {
 };
 
 // Login API
-export const login = async (email, password, publicKey) => {
+export const login = async (email, password) => {
   try {
-    const response = await api.post('/Login', { email, password, publicKey });
+    const response = await api.post('/Login', { email, password });
     return response.data;
   } catch (error) {
     console.error('Login Error:', error.message);

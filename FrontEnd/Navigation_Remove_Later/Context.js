@@ -14,6 +14,7 @@ export const NavProvider = ({ children }) => {
     const [senderEmail, setSenderEmail] = useState('');  // Add user email state
     const [receiverEmail, setReceiverEmail] = useState('');  // Add receiver email state
     const [publicKey, setPublicKey] = useState('');
+    const [privateKey, setPrivateKey] = useState('');
     // Navigation state handlers
     const handleCall = () => setNavState({ call: true, home: false, profile: false });
     const handleHome = () => setNavState({ call: false, home: true, profile: false });
@@ -22,7 +23,8 @@ export const NavProvider = ({ children }) => {
         <NavContext.Provider value={{ navState, handleCall, handleHome, handleProfile,
                                       senderEmail, setSenderEmail,
                                       receiverEmail,setReceiverEmail,
-                                      publicKey, setPublicKey
+                                      publicKey, setPublicKey,
+                                      privateKey, setPrivateKey
                                       }}>
             {children}
         </NavContext.Provider>

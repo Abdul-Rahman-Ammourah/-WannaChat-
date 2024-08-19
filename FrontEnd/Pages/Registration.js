@@ -1,5 +1,5 @@
 import React, { useState,useContext } from 'react';
-import { View, StyleSheet, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { View, StyleSheet, Text, TextInput, TouchableOpacity, Image,Alert } from 'react-native';
 // Icons
 import openeye from '../Assets/Icons/openedEye.png';
 import closeeye from '../Assets/Icons/closedEye.png';
@@ -12,7 +12,7 @@ import { NavContext } from '../Navigation_Remove_Later/Context';
 //End to End encryption
 import End2End from '../Services/End2End';
 const RegisterScreen = ({ navigation }) => {
-  const { setSenderEmail, setPublicKey } = useContext(NavContext);
+  const { setSenderEmail, setPrivateKey } = useContext(NavContext);
   const [user, setUser] = useState({
     email: '',
     username: '',
@@ -36,20 +36,25 @@ const RegisterScreen = ({ navigation }) => {
     const { emailV, userV, passwordV } = RegisterValidation(user.email, user.username, user.password);
     if (emailV && userV && passwordV && user.password === user.repassword) {
       try {
-        const publickKey = await End2End.generateKey();
-        const response = await register(user.email,user.username, user.password,publickKey);
-        console.log(response);
+        const keyPair = await End2End.generateKey();
+        const encryptedPrivateKey = End2End.encryptPrivateKey(keyPair.private,user.password);
+        const response = await register(user.email,user.username, user.password,keyPair.public,encryptedPrivateKey);
+        setPrivateKey(keyPair.private);
         setSenderEmail(user.email);
         navigation.navigate('Home');
-        
       } catch (error) {
+        console.error('Register error', error); // This will log the actual error
         if (error.response) {
-          // Check the error response data
-          console.error('Login Error:', error.response.data);
-          Alert.alert('Login Error', error.response.data);
+          // Error response from the server
+          Alert.alert('Register Error', error.response.data);
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error('Request error:', error.request);
+          Alert.alert('Register Error', 'No response from the server');
         } else {
-          // Handle network or other errors
-          Alert.alert('Login Error', 'Network Error or Server Down');
+          // Something happened in setting up the request that triggered an error
+          console.error('Error setting up request:', error.message);
+          Alert.alert('Register Error', 'Failed to send request');
         }
       }
     } else {

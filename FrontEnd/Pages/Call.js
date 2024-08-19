@@ -6,7 +6,6 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 // Images
 import filePic from "../Assets/Photos/MePhoto.jpg";
 import addEmpty from "../Assets/Icons/addEmpty.png";
-
 export default function Call({ navigation }) {
     const [calls, setCalls] = useState([{
         ProfilePic: filePic,
@@ -14,7 +13,9 @@ export default function Call({ navigation }) {
         callStatus: "Missed Call",
     }]);
     const [search, setSearch] = useState("");
-
+    // LATER
+    // later
+    // LATER
     const RenderItem = ({ item }) => {
         return (
             // send the username to the call page
@@ -29,6 +30,8 @@ export default function Call({ navigation }) {
                     </View>
                     <Icon name="phone" size={28} color="green" />
                 </View>
+
+                <Icon name="clock-alert-outline" size={54} color="green" style={{justifyContent: 'center', alignSelf: 'center'}} />
             </TouchableOpacity>
         );
     };

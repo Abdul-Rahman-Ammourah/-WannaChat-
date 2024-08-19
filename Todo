@@ -1,0 +1,43 @@
+To-Do List:
+
+1. Login Functionality:
+   - Retrieve the encrypted private key from the database during login.
+   - Decrypt the private key using the server-side encryption method (e.g., AES-256 or KMS).
+   - Store the decrypted private key in memory for decrypting received messages.
+
+2. Registration Functionality:
+   - Generate a new private/public key pair during user registration.
+   - Encrypt the private key using server-side encryption before storing it.
+   - Store the encrypted private key securely in the database.
+   - Store the public key in the database, accessible for other users.
+
+3. Message Sending:
+   - Retrieve the receiver's public key from the database when sending a message.
+   - Encrypt the message content using the receiver's public key (for end-to-end encryption).
+   - Send the encrypted message to the recipient through the server.
+
+4. Message Receiving:
+   - Retrieve the encrypted private key from the server (or decrypt it if already in memory).
+   - Decrypt the received message using the user's private key.
+   - Display or process the decrypted message for the user.
+
+5. Security:
+   - Ensure that private keys are encrypted with AES-256 or managed by a Key Management Service (KMS).
+   - Set up access control to ensure only authorized users can access encryption keys.
+   - Rotate the server-side encryption keys periodically to maintain security.
+
+
+Registration:
+    Frontend: User enters the password.
+    Frontend: Encrypt private key with password (optional if backend encryption is preferred).
+    Backend: Hash password and store.
+    Backend: Encrypt private key with a server key (if encryption wasn't done on the frontend).
+Login:
+    Frontend: User submits password to the backend.
+    Backend: Verify password using stored hash.
+    Backend: Send encrypted private key (if client-side decryption).
+    Frontend: Decrypt private key using the password.
+Sending Message:
+    Frontend: Use public key of the recipient (no encryption needed).
+    Receiving Message:
+    Frontend: Decrypt message with the private key (ensure it's encrypted/decrypted correctly based on the process).

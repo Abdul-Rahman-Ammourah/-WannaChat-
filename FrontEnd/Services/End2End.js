@@ -1,13 +1,13 @@
 import RSA from 'react-native-rsa-native';
 import * as Keychain from 'react-native-keychain';
-
+import CryptoJS from 'crypto-js';
 class End2End {
   // 1. Generate RSA Key Pair
   static async generateKey() {
     try {
       const keyPair = await RSA.generateKeys(2048); // 2048-bit RSA keys
       await Keychain.setGenericPassword('privateKey', keyPair.private); // Store private key securely
-      return keyPair.public;
+      return keyPair;
     } catch (error) {
       console.error('Key generation error:', error);
       throw error;
@@ -92,6 +92,18 @@ class End2End {
       throw error;
     }
   }
+
+  // 8. Encrypt the Private key
+  static encryptPrivateKey = (privateKey, password) => {
+    const encryptedKey = CryptoJS.AES.encrypt(privateKey, password).toString();
+    return encryptedKey;
+  };
+
+  // 9. Decrypt the Private key
+  static decryptPrivateKey = (encryptedKey, password) => {
+    const decryptedKey = CryptoJS.AES.decrypt(encryptedKey, password).toString(CryptoJS.enc.Utf8);
+    return decryptedKey;
+  };
 }
 
 export default End2End;

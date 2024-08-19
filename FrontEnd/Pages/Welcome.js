@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useRef,useContext } from 'react';
-import { View,Text, StyleSheet, Animated, Easing, TextInput, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { View, Text, StyleSheet, Animated, Easing, TextInput, KeyboardAvoidingView, Platform, Alert } from 'react-native';
 import { LoginValidation } from '../Services/InputValidation';
-import { Button,TextInput as PaperTextInput } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-//Context
+import { Button } from 'react-native-paper';
+// Context
 import { NavContext } from '../Navigation_Remove_Later/Context';
-//API
+// API
 import { login } from './api';
-//End to End encryption
+// End to End encryption
 import End2End from '../Services/End2End';
+
 export default function Welcome({ navigation }) {
-  const { setSenderEmail, setPublicKey } = useContext(NavContext);
+  const { setSenderEmail, setPrivateKey } = useContext(NavContext);
   const [showLogin, setShowLogin] = useState(false);
   // Animation references
   const translateY = useRef(new Animated.Value(0)).current;
@@ -23,7 +23,8 @@ export default function Welcome({ navigation }) {
     password: '',
   });
   const [stats, setStats] = useState({
-    invalid: false
+    invalid: false,
+    errorMessage: '',
   });
 
   useEffect(() => {
@@ -57,23 +58,39 @@ export default function Welcome({ navigation }) {
     if (valid) {
       setStats({ ...stats, invalid: false });
       try {
-        const publickKey = await End2End.generateKey();
-        const response = await login(user.email, user.password, publickKey);
+        const response = await login(user.email, user.password);
         console.log(response);
-        setSenderEmail(user.email);
-        navigation.navigate('Home');
+
+        if (response.privateKey) {
+          const decryptedPrivateKey = await End2End.decryptPrivateKey(response.privateKey, user.password);
+          setPrivateKey(decryptedPrivateKey);
+          setSenderEmail(user.email);
+          navigation.navigate('Home');
+        } else {
+          throw new Error('Private key is missing in the response');
+        }
       } catch (error) {
+        let errorMessage = 'An unexpected error occurred';
+
         if (error.response) {
           // Check the error response data
           console.error('Login Error:', error.response.data);
-          Alert.alert('Login Error', error.response.data);
+          errorMessage = error.response.data.message || 'Login failed';
+        } else if (error.request) {
+          // The request was made but no response was received
+          console.error('No response from server:', error.request);
+          errorMessage = 'No response from server';
         } else {
-          // Handle network or other errors
-          Alert.alert('Login Error', 'Network Error or Server Down');
+          // Something happened in setting up the request that triggered an error
+          console.error('Error setting up request:', error.message);
+          errorMessage = 'Failed to send request';
         }
+
+        Alert.alert('Login Error', errorMessage);
+        setStats({ ...stats, invalid: true, errorMessage });
       }
     } else {
-      setStats({ ...stats, invalid: true });
+      setStats({ ...stats, invalid: true, errorMessage: 'Invalid email or password format' });
     }
   };
 
@@ -90,7 +107,7 @@ export default function Welcome({ navigation }) {
 
       {showLogin && (
         <Animated.View style={[styles.loginContainer, { opacity }]}>
-          {stats.invalid && <Text style={styles.invalid}>Email or password is incorrect</Text>}
+          {stats.invalid && <Text style={styles.invalid}>{stats.errorMessage || 'Email or password is incorrect'}</Text>}
           <TextInput 
             placeholder='Email'
             placeholderTextColor='rgba(0, 0, 0, 0.5)'
@@ -120,7 +137,7 @@ export default function Welcome({ navigation }) {
           onPress={() => setShowLogin(!showLogin)} 
           style={styles.button}
         >
-          {showLogin ? 'Back to home' : 'Already have an account'}
+          {showLogin ? 'Back to Welcome' : 'Already have an account'}
         </Button>
         <Button 
           mode="contained" 
@@ -193,7 +210,7 @@ const styles = StyleSheet.create({
   },
   footerContainer: {
     position: 'absolute',
-    bottom:20,
+    bottom: 20,
   },
   footerText: {
     fontSize: 13,
