@@ -59,10 +59,8 @@ export default function Welcome({ navigation }) {
       setStats({ ...stats, invalid: false });
       try {
         const response = await login(user.email, user.password);
-        console.log(response);
-
-        if (response.privateKey) {
-          const decryptedPrivateKey = await End2End.decryptPrivateKey(response.privateKey, user.password);
+        if (response) {
+          const decryptedPrivateKey = await End2End.decryptPrivateKey(response, user.password);
           setPrivateKey(decryptedPrivateKey);
           setSenderEmail(user.email);
           navigation.navigate('Home');

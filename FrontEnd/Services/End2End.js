@@ -26,11 +26,11 @@ class End2End {
   }
 
   // 3. Decrypt Message with the user's private key
-  static async decryptMessage(encryptedMessage) {
+  static async decryptMessage(encryptedMessage, privateKey) {
     try {
       const credentials = await Keychain.getGenericPassword();
       if (credentials) {
-        const decryptedMessage = await RSA.decrypt(encryptedMessage, credentials.password);
+        const decryptedMessage = await RSA.decrypt(encryptedMessage, privateKey);
         return decryptedMessage;
       } else {
         throw new Error('Private key not found');

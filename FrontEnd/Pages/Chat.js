@@ -6,7 +6,7 @@ import { NavContext } from '../Navigation_Remove_Later/Context';
 //End to End encryption
 import End2End from "../Services/End2End";
 export default function Chat({ navigation }) {
-    const {senderEmail,receiverEmail,publicKey} = useContext(NavContext);
+    const {senderEmail,receiverEmail,publicKey,privateKey} = useContext(NavContext);
     const [messages, setMessages] = useState([]);  // Initialize messages as an empty array
     const [newMessage, setNewMessage] = useState("");
     const flatListRef = useRef(null);  // Reference for FlatList
@@ -15,32 +15,34 @@ export default function Chat({ navigation }) {
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                const receiverEmail = senderEmail;  // Replace with actual receiver email
+                const receiverEmail = senderEmail;  // Use the actual receiver email
                 const fetchedMessages = await getMessage(receiverEmail);
-                
-                // Map the fetched messages to the correct format
-                const formattedMessages = fetchedMessages.map((msg) => ({
-                    id: msg._id,  // Assuming MongoDB returns _id
-                    text: msg.message,
-                    type: msg.fromEmail === senderEmail ? 'sent' : 'received' // Compare sender email to identify message type
-                }));
-                const decryptedMessages = fetchedMessages.map((msg) => ({
-                    msg : End2End.decryptMessage(msg.message),
-                }))
-                console.log(decryptedMessages);
-                setMessages(formattedMessages);  // Set messages without reversing
+    
+                // Decrypt each message asynchronously
+                const decryptedMessages = await Promise.all(
+                    fetchedMessages.map(async (msg) => {
+                        const decryptedText = await End2End.decryptMessage(msg.message, privateKey);
+                        return {
+                            id: msg._id,  // Assuming MongoDB returns _id
+                            text: decryptedText,
+                            type: msg.fromEmail === senderEmail ? 'sent' : 'received',  // Identify message type
+                        };
+                    })
+                );
+    
+                setMessages(decryptedMessages);  // Set messages after decryption
             } catch (error) {
-                console.error("Error fetching messages:", error);
+                console.error("Error fetching or decrypting messages:", error);
             }
         };
-
+    
         fetchMessages();
-    }, []);
+    }, [senderEmail, privateKey]);
 
     const handleSend = async () => {
         if (newMessage.trim()) {
             // Encrypt the message
-            const encryptedMessage = await End2End.encryptMessage(newMessage, publicKey);
+            const encryptedMessage = await End2End.encryptMessage(newMessage,publicKey);
             // Send message to the backend
             const messageToSend = {
                 fromEmail: senderEmail,  // Replace with actual sender email

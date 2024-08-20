@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList, Alert, TextInput } from "react-native";
-import { Modal, Searchbar, Snackbar, Button } from "react-native-paper";
+import { Modal, Searchbar, Snackbar, Button,IconButton } from "react-native-paper";
 import { getUser } from "./api";
 import { NavContext } from "../Navigation_Remove_Later/Context";
 import { EmailCheck } from "../Services/InputValidation";
@@ -108,9 +108,8 @@ export default function Home({ navigation }) {
                     contentContainerStyle={styles.contentList}
                     style={styles.list}
                 />
-                <TouchableOpacity style={styles.button} onPress={() => setVisible({ ...visible, Modal: true })}>
-                    <Image source={addEmpty} style={styles.buttonImage} />
-                </TouchableOpacity>
+
+                <IconButton icon={"plus"} size={35} iconColor="#776BFF" onPress={() => setVisible({ ...visible, Modal: true })} style={styles.addButton} />
             </View>
             
             <Modal 
@@ -265,4 +264,11 @@ const styles = StyleSheet.create({
     modalButton: {
         width: '100%',
     },
+    addButton: {
+        position: 'absolute',
+        bottom: 35,
+        right: 35,
+        borderWidth: 2,
+        borderColor: '#776BFF',
+    }
 });

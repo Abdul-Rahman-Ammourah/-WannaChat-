@@ -11,7 +11,6 @@ import Home from "./Pages/Home";
 import Register from "./Pages/Registration";
 import Call from "./Pages/Call";
 import Profile from "./Pages/Profile";
-import Footernav from "./Navigation_Remove_Later/Navigationfooter";
 import Chat from "./Pages/Chat";
 
 const Stack = createNativeStackNavigator();
@@ -25,7 +24,9 @@ function MainNavigator() {
       <Stack.Screen name="Welcome" component={Welcome} />
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Register" component={Register} />
-      <Stack.Screen name="Call" component={Call} />
+      {/* Later */}
+      <Stack.Screen name="Call" component={Call} /> 
+      {/* Later */}
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Chat" component={Chat} />
     </Stack.Navigator>
@@ -33,21 +34,14 @@ function MainNavigator() {
 }
 
 export default function App() {
-  const [showFooter, setShowFooter] = React.useState(false);
 
   return (
     <NavProvider>
-      <NavigationContainer
-        onStateChange={(state) => {
-          const currentRoute = state?.routes[state.index].name;
-          setShowFooter(currentRoute !== "Welcome" && currentRoute !== "Login" && currentRoute !== "Register" && currentRoute !== "Chat");
-        }}
-      >
+      <NavigationContainer>
         <View style={styles.container}>
           <View style={styles.content}>
             <MainNavigator />
           </View>
-          {showFooter && <Footernav />}
         </View>
       </NavigationContainer>
     </NavProvider>
