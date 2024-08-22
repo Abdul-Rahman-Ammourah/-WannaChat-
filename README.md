@@ -1,19 +1,19 @@
 # WannaChat
 
-WannaChat is a secure messaging application built with React Native for the front end and Rust for the back end. The primary focus of this application is to ensure robust security and privacy for all communications.
+WannaChat is a secure messaging application built with React Native for the front end and C# .NET for the back end. The primary focus of this application is to ensure robust security and privacy for all communications.
 
 ## Features
 
-- **End-to-End Encryption**: All messages are encrypted to ensure that only the intended recipients can read them.
-- **User Authentication**: Secure user authentication mechanisms to protect user data.
-- **Real-time Messaging**: Seamless real-time messaging experience.
-- **Cross-Platform**: Available on both Android and iOS devices.
-- **Secure Data Storage**: Encrypted data storage to protect user information.
+- **End-to-End Encryption**: All messages are encrypted to ensure that only the intended recipients can read them.(Done)
+- **User Authentication**: Secure user authentication mechanisms to protect user data.(In progress)
+- **Real-time Messaging**: Seamless real-time messaging experience(In progress).
+- **Cross-Platform**: Available on both Android and iOS devices(In progress).
+- **Secure Data Storage**: Encrypted data storage to protect user information(In progress).
 
 ## Tech Stack
 
 - **Frontend**: React Native
-- **Backend**: Rust
+- **Backend**: C# .NET
 - **Database**: MongoDB
 
 ## Installation
@@ -22,7 +22,7 @@ WannaChat is a secure messaging application built with React Native for the fron
 
 - Node.js
 - React Native CLI
-- Rust
+- .NET SDK
 - MongoDB
 
 ### Frontend Setup
@@ -46,19 +46,19 @@ WannaChat is a secure messaging application built with React Native for the fron
 4. Run the application on your device or emulator:
     ```bash
     npx react-native run-android  # For Android
-    npx react-native run-ios      # For iOS
+    npx react-native run-ios      # For iOS (in progress)
     ```
 
-### Backend Setup
+### Backend Setup (Still testing locally)
 
 1. Navigate to the backend directory:
     ```bash
     cd backend
     ```
 
-2. Install Rust dependencies:
+2. Install .NET SDK:
     ```bash
-    cargo build
+    dotnet restore
     ```
 
 3. Set up the MongoDB database:
@@ -67,9 +67,9 @@ WannaChat is a secure messaging application built with React Native for the fron
     mongod --dbpath /path_to_your_db
     ```
 
-4. Start the Rust server:
+4. Start the C# .NET server:
     ```bash
-    cargo run
+    dotnet run
     ```
 
 ## Usage
@@ -78,13 +78,9 @@ WannaChat is a secure messaging application built with React Native for the fron
 2. Sign up or log in to your account.
 3. Start chatting securely with your contacts.
 
-
-
-
-
 ## Contact
 
-For any questions or suggestions, please open an issue or contact us at [abdulrhmanammmourah@gmail.com](mailto:email@example.com).
+For any questions or suggestions, please open an issue or contact us at [abdulrhmanammmourah@gmail.com](mailto:abdulrhmanammmourah@gmail.com).
 
 ---
 
