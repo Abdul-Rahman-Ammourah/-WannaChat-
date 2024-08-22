@@ -1,6 +1,7 @@
 import React, { useState,useContext } from 'react';
 import { View, StyleSheet, Text, TextInput, TouchableOpacity, Image,Alert } from 'react-native';
 // Icons
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import openeye from '../Assets/Icons/openedEye.png';
 import closeeye from '../Assets/Icons/closedEye.png';
 // Validation
@@ -12,7 +13,7 @@ import { NavContext } from '../Navigation_Remove_Later/Context';
 //End to End encryption
 import End2End from '../Services/End2End';
 const RegisterScreen = ({ navigation }) => {
-  const { setSenderEmail, setPrivateKey } = useContext(NavContext);
+  const { setSenderEmail, setPrivateKey, setUsername } = useContext(NavContext);
   const [user, setUser] = useState({
     email: '',
     username: '',
@@ -41,6 +42,7 @@ const RegisterScreen = ({ navigation }) => {
         const response = await register(user.email,user.username, user.password,keyPair.public,encryptedPrivateKey);
         setPrivateKey(keyPair.private);
         setSenderEmail(user.email);
+        setUsername(user.username);
         navigation.navigate('Home');
       } catch (error) {
         console.error('Register error', error); // This will log the actual error
@@ -125,7 +127,7 @@ const RegisterScreen = ({ navigation }) => {
           onChangeText={(text) => setUser({ ...user, password: text })}
         />
         <TouchableOpacity onPress={() => setStats({ ...stats, showPass: !stats.showPass })}>
-          <Image source={stats.showPass ? openeye : closeeye} style={styles.icon} />
+          <Icon name={stats.showPass ? 'eye' : 'eye-off'} color={'black'} size={20} style={styles.icon} />
         </TouchableOpacity>
       </View>
 
@@ -201,7 +203,7 @@ const styles = StyleSheet.create({
   icon: {
     position: 'absolute',
     right: 14,
-    bottom: 15,
+    bottom: 12,
   },
   button: {
     width: '100%',

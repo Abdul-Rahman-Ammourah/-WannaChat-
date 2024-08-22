@@ -1,69 +1,109 @@
-import React, { useState, useEffect, useRef,useContext } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, KeyboardAvoidingView, Platform } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { sendMessage, getMessage } from "./api"; // Import your API functions
+import { sendMessage, getMessage } from "../Pages/api"; // Import your API functions
 import { NavContext } from '../Navigation_Remove_Later/Context';
-//End to End encryption
 import End2End from "../Services/End2End";
+import * as SignalR from '@microsoft/signalr';
+
 export default function Chat({ navigation }) {
-    const {senderEmail,receiverEmail,publicKey,privateKey} = useContext(NavContext);
-    const [messages, setMessages] = useState([]);  // Initialize messages as an empty array
+    const { senderEmail, receiverEmail, publicKey, privateKey, ChatUsername } = useContext(NavContext);
+    const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
-    const flatListRef = useRef(null);  // Reference for FlatList
+    const flatListRef = useRef(null);
+    const [connection, setConnection] = useState(null);
 
     // Fetch messages when the component mounts
     useEffect(() => {
         const fetchMessages = async () => {
             try {
-                const receiverEmail = senderEmail;  // Use the actual receiver email
-                const fetchedMessages = await getMessage(receiverEmail);
-    
-                // Decrypt each message asynchronously
+                const receiverEmail = senderEmail;
+                const fetchedMessages = await getMessage(receiverEmail, senderEmail);
+
                 const decryptedMessages = await Promise.all(
                     fetchedMessages.map(async (msg) => {
                         const decryptedText = await End2End.decryptMessage(msg.message, privateKey);
                         return {
-                            id: msg._id,  // Assuming MongoDB returns _id
+                            id: msg._id,
                             text: decryptedText,
-                            type: msg.fromEmail === senderEmail ? 'sent' : 'received',  // Identify message type
+                            type: msg.fromEmail === senderEmail ? 'sent' : 'received',
                         };
                     })
                 );
-    
-                setMessages(decryptedMessages);  // Set messages after decryption
+
+                setMessages(decryptedMessages);
             } catch (error) {
                 console.error("Error fetching or decrypting messages:", error);
             }
         };
-    
+
         fetchMessages();
     }, [senderEmail, privateKey]);
 
-    const handleSend = async () => {
-        if (newMessage.trim()) {
-            // Encrypt the message
-            const encryptedMessage = await End2End.encryptMessage(newMessage,publicKey);
-            // Send message to the backend
-            const messageToSend = {
-                fromEmail: senderEmail,  // Replace with actual sender email
-                toEmail: receiverEmail,  // Replace with actual receiver email
-                message: encryptedMessage,
-                }
+    // Connect to SignalR hub on mount
+    useEffect(() => {
+        const connectToHub = async () => {
+            const newConnection = new SignalR.HubConnectionBuilder()
+                .withUrl("https://peacock-electric-merely.ngrok-free.app/chathub",{
+                    transport: SignalR.HttpTransportType.WebSockets
+                }) // Replace with your backend URL
+                .withAutomaticReconnect()
+                .build();
 
             try {
-                // Send message to the backend
+                await newConnection.start();
+                console.log("Connected to SignalR Hub");
+
+                newConnection.on("ReceiveMessage", async (fromEmail, toEmail, encryptedMessage, date) => {
+                    const decryptedText = await End2End.decryptMessage(encryptedMessage, privateKey);
+                    setMessages((prevMessages) => [
+                        ...prevMessages,
+                        {
+                            id: Date.now().toString(),
+                            text: decryptedText,
+                            type: fromEmail === senderEmail ? 'sent' : 'received',
+                        },
+                    ]);
+                });
+
+                setConnection(newConnection);
+            } catch (error) {
+                console.error("Error connecting to SignalR hub:", error);
+            }
+        };
+
+        connectToHub();
+
+        return () => {
+            connection?.stop();
+        };
+    }, [privateKey]);
+
+    const handleSend = async () => {
+        if (newMessage.trim()) {
+            const encryptedMessage = await End2End.encryptMessage(newMessage, publicKey);
+
+            const messageToSend = {
+                fromEmail: senderEmail,
+                toEmail: receiverEmail,
+                message: encryptedMessage,
+            };
+
+            try {
                 await sendMessage(messageToSend.fromEmail, messageToSend.toEmail, messageToSend.message);
-                
-                // Update local message state for UI
+
                 setMessages([
                     ...messages,
                     { id: Date.now().toString(), text: newMessage, type: 'sent' }
                 ]);
 
-                setNewMessage("");  // Clear the input field
+                setNewMessage("");
 
-                // Scroll to the bottom of the list after sending the message
                 flatListRef.current?.scrollToEnd({ animated: true });
+
+                if (connection) {
+                    connection.send("SendMessage", senderEmail, receiverEmail, encryptedMessage, new Date());
+                }
             } catch (error) {
                 console.error("Error sending message:", error);
             }
@@ -78,28 +118,26 @@ export default function Chat({ navigation }) {
 
     return (
         <View style={styles.container}>
-            {/* Header */}
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.goBack()}>
                     <Icon name="arrow-left" size={28} color="#000" />
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Username</Text>
+                <Text style={styles.headerTitle}>{ChatUsername}</Text>
                 <TouchableOpacity onPress={() => console.log('Camera pressed')}>
                     <Icon name="camera" size={28} color="#000" />
                 </TouchableOpacity>
             </View>
 
-            {/* Message List */}
             <FlatList
-                ref={flatListRef}  // Reference to FlatList
+                ref={flatListRef}
                 data={messages}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.messagesContainer}
-                onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}  // Scroll to end on content change
-                onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })}  // Scroll to end on initial layout
+                onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
+                onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })}
             />
-            {/* Input field and send button */}
+
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                 style={styles.inputContainer}

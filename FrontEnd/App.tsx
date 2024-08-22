@@ -11,7 +11,7 @@ import Home from "./Pages/Home";
 import Register from "./Pages/Registration";
 import Call from "./Pages/Call";
 import Profile from "./Pages/Profile";
-import Chat from "./Pages/Chat";
+import Chat from "./Pages/ChatPage/Chat";
 
 const Stack = createNativeStackNavigator();
 

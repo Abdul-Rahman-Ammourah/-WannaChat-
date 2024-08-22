@@ -28,10 +28,10 @@ export const login = async (email, password) => {
 };
 
 // Get Messages API
-export const getMessage = async (email) => {
+export const getMessage = async (receiverEmail, senderEmail) => {
   try {
     const response = await api.get('/ReceiveMessages', {
-      params: { receiverEmail: email }  // Ensure this matches the expected query param name
+      params: { receiverEmail: receiverEmail, senderEmail: senderEmail }  // Ensure this matches the expected query param name
     });
     return response.data;
   } catch (error) {

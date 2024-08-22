@@ -5,7 +5,7 @@ import { NavContext } from '../Navigation_Remove_Later/Context';
 //Icons
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 export default function Profile ({navigation})  {
-    const {senderEmail} = useContext(NavContext)
+    const {senderEmail,Username} = useContext(NavContext)
     const [showContent1, setshowContent1] = useState(false);
     const [showContent2, setshowContent2] = useState(false);
     const [showContent3, setshowContent3] = useState(false);
@@ -28,7 +28,7 @@ export default function Profile ({navigation})  {
             </TouchableOpacity>
 
                {showContent1 && (<><Text style={styles.Content}>Email: {senderEmail}</Text>
-                                   <Text style={styles.Content}>Small title</Text>
+                                   <Text style={styles.Content}>Username: {Username}</Text>
                                    <Text style={styles.Content}>Small title</Text>
                                    <Text style={styles.Content}>Small title</Text>
                                    </>)}

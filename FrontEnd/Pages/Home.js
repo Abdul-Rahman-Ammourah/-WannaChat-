@@ -6,11 +6,10 @@ import { NavContext } from "../Navigation_Remove_Later/Context";
 import { EmailCheck } from "../Services/InputValidation";
 //Assets
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import addEmpty from "../Assets/Icons/addEmpty.png";
 import filePic from "../Assets/Photos/MePhoto.jpg";
 
 export default function Home({ navigation }) {
-    const { setReceiverEmail,setPublicKey } = useContext(NavContext);
+    const { setReceiverEmail,setPublicKey,setChatUsername } = useContext(NavContext);
     const [users, setUsers] = useState([]);
     const [addEmail, setAddEmail] = useState("");
     const [search, setSearch] = useState("");
@@ -24,6 +23,7 @@ export default function Home({ navigation }) {
             <TouchableOpacity
                 onPress={() => {
                     setReceiverEmail(item.email);
+                    setChatUsername(item.username);
                     navigation.navigate("Chat");
                 }}
             >
@@ -43,14 +43,15 @@ export default function Home({ navigation }) {
         try {
             const response = await getUser(email);
             if (response) {
-                const username = response.username;
-                setPublicKey(response.publicKey);
                 const alreadyExists = users.some(user => user.username.toLowerCase() === username.toLowerCase());
                 if (!alreadyExists) {
+                    const username = response.username;
+                    // Fetch the Profile Pic from the database
+                    setPublicKey(response.publicKey);
                     setUsers(prevUsers => [...prevUsers, { username, ProfilePic: filePic, email }]);
                     setAddEmail(""); // Clear the input field
                 } else {
-                    setVisible({ ...visible, Snackbar: true }); // Show Snackbar if user already exists
+                    setVisible({ ...visible, Snackbar: true });
                 }
             }
         } catch (error) {
@@ -110,6 +111,9 @@ export default function Home({ navigation }) {
                 />
 
                 <IconButton icon={"plus"} size={35} iconColor="#776BFF" onPress={() => setVisible({ ...visible, Modal: true })} style={styles.addButton} />
+                <IconButton icon={"plus"} size={35} iconColor="#776BFF" onPress={() => navigation.navigate("ChatTest", 
+                                { receiverEmail: "ammourah19@gmail.com", senderEmail: "ammoruah20@gmail.com" })} />
+
             </View>
             
             <Modal 

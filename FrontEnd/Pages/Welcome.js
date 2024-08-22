@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import { View, Text, StyleSheet, Animated, Easing, TextInput, KeyboardAvoidingView, Platform, Alert } from 'react-native';
+import { View, Text, StyleSheet, Animated, Easing, TextInput, KeyboardAvoidingView, Platform, Alert, TouchableOpacity } from 'react-native';
 import { LoginValidation } from '../Services/InputValidation';
 import { Button } from 'react-native-paper';
 // Context
@@ -8,10 +8,13 @@ import { NavContext } from '../Navigation_Remove_Later/Context';
 import { login } from './api';
 // End to End encryption
 import End2End from '../Services/End2End';
+//Icon
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export default function Welcome({ navigation }) {
-  const { setSenderEmail, setPrivateKey } = useContext(NavContext);
+  const { setSenderEmail, setPrivateKey, setUsername } = useContext(NavContext);
   const [showLogin, setShowLogin] = useState(false);
+  const [showpass, setShowpass] = useState(true);
   // Animation references
   const translateY = useRef(new Animated.Value(0)).current;
   const opacity = useRef(new Animated.Value(0)).current;
@@ -59,17 +62,17 @@ export default function Welcome({ navigation }) {
       setStats({ ...stats, invalid: false });
       try {
         const response = await login(user.email, user.password);
-        if (response) {
-          const decryptedPrivateKey = await End2End.decryptPrivateKey(response, user.password);
+        if (response.privateKey) {
+          const decryptedPrivateKey = await End2End.decryptPrivateKey(response.privateKey, user.password);
           setPrivateKey(decryptedPrivateKey);
           setSenderEmail(user.email);
+          setUsername(response.Username);
           navigation.navigate('Home');
         } else {
           throw new Error('Private key is missing in the response');
         }
       } catch (error) {
         let errorMessage = 'An unexpected error occurred';
-
         if (error.response) {
           // Check the error response data
           console.error('Login Error:', error.response.data);
@@ -117,8 +120,11 @@ export default function Welcome({ navigation }) {
             placeholderTextColor='rgba(0, 0, 0, 0.5)'
             style={styles.input}
             onChangeText={(text) => setUser({ ...user, password: text })}
-            secureTextEntry={true}
+            secureTextEntry={showpass}
           />
+          <TouchableOpacity onPress={() => setShowpass(!showpass)}>
+            <Icon name={showpass ? 'eye' : 'eye-off'} color={'black'} size={20} style={styles.icon} />
+          </TouchableOpacity>
         </Animated.View>
       )}
 
@@ -213,5 +219,10 @@ const styles = StyleSheet.create({
   footerText: {
     fontSize: 13,
     color: 'black',
+  },
+  icon: {
+    position: 'absolute',
+    right: 10,
+    bottom: 23,
   },
 });
