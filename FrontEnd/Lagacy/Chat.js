@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, KeyboardAvoidingView, Platform } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { sendMessage, getMessage } from "../Pages/api"; // Import your API functions
+import { sendMessage, getMessage } from "../API/api"; // Import your API functions
 import { NavContext } from '../Navigation_Remove_Later/Context';
 import End2End from "../Services/End2End";
 import * as SignalR from '@microsoft/signalr';

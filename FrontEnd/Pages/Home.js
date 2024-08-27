@@ -1,7 +1,7 @@
 import React, { useState, useContext } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList, Alert, TextInput } from "react-native";
 import { Modal, Searchbar, Snackbar, Button,IconButton } from "react-native-paper";
-import { getUser } from "./api";
+import { getUser } from "../API/api";
 import { NavContext } from "../Navigation_Remove_Later/Context";
 import { EmailCheck } from "../Services/InputValidation";
 //Assets
@@ -10,7 +10,13 @@ import filePic from "../Assets/Photos/MePhoto.jpg";
 
 export default function Home({ navigation }) {
     const { setReceiverEmail,setPublicKey,setChatUsername } = useContext(NavContext);
-    const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState([
+        {
+            username: "Global Chat",
+            email: "Global",
+            ProfilePic: filePic
+        }
+    ]);
     const [addEmail, setAddEmail] = useState("");
     const [search, setSearch] = useState("");
     const [visible, setVisible] = useState({
@@ -24,7 +30,7 @@ export default function Home({ navigation }) {
                 onPress={() => {
                     setReceiverEmail(item.email);
                     setChatUsername(item.username);
-                    navigation.navigate("Chat");
+                    navigation.navigate("GlobalChat");
                 }}
             >
                 <View style={styles.contact}>
@@ -111,8 +117,6 @@ export default function Home({ navigation }) {
                 />
 
                 <IconButton icon={"plus"} size={35} iconColor="#776BFF" onPress={() => setVisible({ ...visible, Modal: true })} style={styles.addButton} />
-                <IconButton icon={"plus"} size={35} iconColor="#776BFF" onPress={() => navigation.navigate("ChatTest", 
-                                { receiverEmail: "ammourah19@gmail.com", senderEmail: "ammoruah20@gmail.com" })} />
 
             </View>
             

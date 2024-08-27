@@ -5,7 +5,7 @@ import { Button } from 'react-native-paper';
 // Context
 import { NavContext } from '../Navigation_Remove_Later/Context';
 // API
-import { login } from './api';
+import { login } from '../API/api';
 // End to End encryption
 import End2End from '../Services/End2End';
 //Icon
@@ -66,7 +66,7 @@ export default function Welcome({ navigation }) {
           const decryptedPrivateKey = await End2End.decryptPrivateKey(response.privateKey, user.password);
           setPrivateKey(decryptedPrivateKey);
           setSenderEmail(user.email);
-          setUsername(response.Username);
+          setUsername(response.username);
           navigation.navigate('Home');
         } else {
           throw new Error('Private key is missing in the response');

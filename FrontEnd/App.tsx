@@ -1,5 +1,6 @@
 import React from "react";
 import 'react-native-get-random-values';
+import 'react-native-url-polyfill/auto';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, StyleSheet } from "react-native";
@@ -12,7 +13,8 @@ import Register from "./Pages/Registration";
 import Call from "./Pages/Call";
 import Profile from "./Pages/Profile";
 import Chat from "./Pages/ChatPage/Chat";
-
+//Temp
+import GlobalChat from "./Pages/ChatPage/GlobalChat";
 const Stack = createNativeStackNavigator();
 
 function MainNavigator() {
@@ -29,6 +31,7 @@ function MainNavigator() {
       {/* Later */}
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Chat" component={Chat} />
+      <Stack.Screen name="GlobalChat" component={GlobalChat} />
     </Stack.Navigator>
   );
 }

@@ -1,4 +1,4 @@
-import { getMessage, sendMessage } from "../api"; 
+import { getMessage, sendMessage } from "../../API/api"; 
 import End2End from "../../Services/End2End";
 import * as SignalR from '@microsoft/signalr';
 
@@ -26,6 +26,7 @@ export const fetchMessages = async (senderEmail, privateKey, setMessages) => {
 
 export const handleSend = async (newMessage, senderEmail, receiverEmail, publicKey, setMessages, flatListRef, setNewMessage) => {
     if (newMessage.trim()) {
+        
         const encryptedMessage = await End2End.encryptMessage(newMessage, publicKey);
 
         const messageToSend = {

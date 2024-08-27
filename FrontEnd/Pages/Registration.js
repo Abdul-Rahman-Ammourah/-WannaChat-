@@ -7,7 +7,7 @@ import closeeye from '../Assets/Icons/closedEye.png';
 // Validation
 import { RegisterValidation } from '../Services/InputValidation';
 //api
-import { register } from './api';
+import { register } from '../API/api';
 //Context
 import { NavContext } from '../Navigation_Remove_Later/Context';
 //End to End encryption

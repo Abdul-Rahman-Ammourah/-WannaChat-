@@ -2,25 +2,38 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, KeyboardAvoidingView, Platform } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { NavContext } from '../../Navigation_Remove_Later/Context';
-import { fetchMessages, handleSend, connectToHub } from './ChatFunctions';
+import { fetchMessages, handleSend } from './ChatFunctions';
+import { useSignalR } from "../../API/api";
 
 export default function Chat({ navigation }) {
     const { senderEmail, receiverEmail, publicKey, privateKey, ChatUsername } = useContext(NavContext);
-    const [messages, setMessages] = useState([]);
+    const [Messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const flatListRef = useRef(null);
-    const [connection, setConnection] = useState(null);
+
+    const { sendMessageToUser, messages } = useSignalR(); // Use the custom hook
 
     // Fetch messages when the component mounts
     useEffect(() => {
         fetchMessages(senderEmail, privateKey, setMessages);
     }, [senderEmail, privateKey]);
 
+    // Update messages from SignalR
+    useEffect(() => {
+        if (messages.length > 0) {
+            setMessages(prevMessages => [...prevMessages, ...messages]);
+        }
+    }, [messages]);
+
     // Handle send message
     const handleSendMessage = () => {
+        if (newMessage.trim() === '') {
+            return; // Do nothing if the message is empty
+        }
         handleSend(newMessage, senderEmail, receiverEmail, publicKey, setMessages, flatListRef, setNewMessage);
+        sendMessageToUser(receiverEmail, senderEmail, newMessage); // This should be called after handleSend
     };
-    
+
     const renderItem = ({ item }) => (
         <View style={[styles.message, item.type === 'sent' ? styles.sentMessage : styles.receivedMessage]}>
             <Text style={styles.messageText}>{item.text}</Text>
@@ -41,7 +54,7 @@ export default function Chat({ navigation }) {
 
             <FlatList
                 ref={flatListRef}
-                data={messages}
+                data={Messages}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.messagesContainer}
