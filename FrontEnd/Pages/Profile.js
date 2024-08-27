@@ -3,7 +3,7 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions, Modal, Fla
 import MePhoto from '../Assets/Photos/MePhoto.jpg';
 import { NavContext } from '../Navigation_Remove_Later/Context';
 //Icons
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 export default function Profile ({navigation})  {
     const {senderEmail,Username} = useContext(NavContext)
     const [showContent1, setshowContent1] = useState(false);
@@ -13,8 +13,11 @@ export default function Profile ({navigation})  {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconContainer}>
-          <Icon name="arrow-left" size={30} color="white"/>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.iconContainerArrow}>
+          <Icon name="arrow-back" size={30} color="white"/>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('Settings')} style={styles.iconContainerSettings}>
+          <Icon name="settings" size={28} color="white"/>
         </TouchableOpacity>
         <Image
           source={MePhoto}
@@ -104,9 +107,15 @@ const styles = StyleSheet.create({
     marginBottom:5,
     borderRadius:12,
   },
-  iconContainer: {
+  iconContainerArrow: {
     position: 'absolute',
     left: 16,
+    top: 16,
+    zIndex: 1,
+  },
+  iconContainerSettings: {
+    position: 'absolute',
+    right: 16,
     top: 16,
     zIndex: 1,
   },

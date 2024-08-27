@@ -4,7 +4,7 @@ import * as SignalR from '@microsoft/signalr';
 
 const api = axios.create({
   baseURL: 'https://charming-hornet-finally.ngrok-free.app', 
-  timeout: 4500,  // Optional: Set a timeout for requests
+  timeout: 4000,  // Optional: Set a timeout for requests
 });
 
 // Register API

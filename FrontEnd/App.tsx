@@ -13,6 +13,7 @@ import Register from "./Pages/Registration";
 import Call from "./Pages/Call";
 import Profile from "./Pages/Profile";
 import Chat from "./Pages/ChatPage/Chat";
+import Settings from "./Pages/Settings";
 //Temp
 import GlobalChat from "./Pages/ChatPage/GlobalChat";
 const Stack = createNativeStackNavigator();
@@ -32,6 +33,7 @@ function MainNavigator() {
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Chat" component={Chat} />
       <Stack.Screen name="GlobalChat" component={GlobalChat} />
+      <Stack.Screen name="Settings" component={Settings} />
     </Stack.Navigator>
   );
 }
