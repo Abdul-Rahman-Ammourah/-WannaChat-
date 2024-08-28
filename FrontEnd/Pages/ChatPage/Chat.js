@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, KeyboardAvoidingView, Platform } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { NavContext } from '../../Navigation_Remove_Later/Context';
-import { fetchMessages, handleSend } from './ChatFunctions';
-import { useSignalR } from "../../API/api";
+import { fetchMessages, handleSend ,useSignalR} from './ChatFunctions';
 
 export default function Chat({ navigation }) {
     const { senderEmail, receiverEmail, publicKey, privateKey, ChatUsername } = useContext(NavContext);

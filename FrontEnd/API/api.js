@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react';
 import axios from 'axios';
-import * as SignalR from '@microsoft/signalr';
 
 const api = axios.create({
   baseURL: 'https://charming-hornet-finally.ngrok-free.app', 
@@ -64,40 +62,4 @@ export const getUser = async (Email) => {
     console.error('Get User Error:',error)
     throw error;
   }
-}
-export function useSignalR() {
-  const [connection, setConnection] = useState(null);
-  const [messages, setMessages] = useState([]);
-
-  useEffect(() => {
-    const newConnection = new SignalR.HubConnectionBuilder()
-      .withUrl('https://charming-hornet-finally.ngrok-free.app/chatHub') // Replace with your backend URL
-      .build();
-
-    newConnection.on('ReceiveMessage', (user, message) => {
-      console.log('ReceiveMessage: ', user, message);
-      setMessages(prevMessages => [...prevMessages, { user, message }]);
-    });
-
-    newConnection.start()
-      .then(() => {
-        console.log('SignalR Connected');
-        setConnection(newConnection);
-      })
-      .catch(err => console.error('SignalR Connection Error: ', err));
-
-    return () => {
-      console.log('SignalR Disconnected');
-      newConnection.stop();
-    };
-  }, []);
-
-  const sendMessageToUser = (email, user, message) => {
-    if (connection) {
-      connection.invoke('SendMessageToUser', email, user, message)
-        .catch(err => console.error('SendMessage Error: ', err));
-    }
-  };
-
-  return { sendMessageToUser, messages };
 }
