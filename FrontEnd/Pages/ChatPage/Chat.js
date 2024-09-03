@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, KeyboardAvoidingView, Platform } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { NavContext } from '../../Context/Context';
-import { fetchMessages, handleSend ,useSignalR} from './ChatFunctions';
+import { fetchMessages, SendMessage } from './ChatFunctions';
 
 export default function Chat({ navigation }) {
     const { senderEmail, receiverEmail, publicKey, privateKey, ChatUsername } = useContext(NavContext);
@@ -10,27 +10,17 @@ export default function Chat({ navigation }) {
     const [newMessage, setNewMessage] = useState("");
     const flatListRef = useRef(null);
 
-    const { sendMessageToUser, messages } = useSignalR(); // Use the custom hook
-
     // Fetch messages when the component mounts
     useEffect(() => {
         fetchMessages(senderEmail, privateKey, setMessages);
     }, [senderEmail, privateKey]);
 
-    // Update messages from SignalR
-    useEffect(() => {
-        if (messages.length > 0) {
-            setMessages(prevMessages => [...prevMessages, ...messages]);
-        }
-    }, [messages]);
-
     // Handle send message
     const handleSendMessage = () => {
         if (newMessage.trim() === '') {
-            return; // Do nothing if the message is empty
+            return;
         }
-        handleSend(newMessage, senderEmail, receiverEmail, publicKey, setMessages, flatListRef, setNewMessage);
-        sendMessageToUser(receiverEmail, senderEmail, newMessage); // This should be called after handleSend
+        SendMessage(newMessage, senderEmail, receiverEmail, publicKey, setMessages, flatListRef, setNewMessage);
     };
 
     const renderItem = ({ item }) => (

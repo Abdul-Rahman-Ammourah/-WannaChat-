@@ -1,5 +1,5 @@
 import React,{useContext, useState} from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions, Modal, FlatList, ScrollView } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions, ScrollView } from 'react-native';
 import MePhoto from '../Assets/Photos/MePhoto.jpg';
 import { NavContext } from '../Context/Context';
 //Icons

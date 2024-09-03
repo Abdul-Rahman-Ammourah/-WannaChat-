@@ -2,8 +2,6 @@ import React, { useState,useContext } from 'react';
 import { View, StyleSheet, Text, TextInput, TouchableOpacity, Image,Alert } from 'react-native';
 // Icons
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import openeye from '../Assets/Icons/openedEye.png';
-import closeeye from '../Assets/Icons/closedEye.png';
 // Validation
 import { RegisterValidation } from '../Services/InputValidation';
 //api
@@ -20,7 +18,6 @@ const RegisterScreen = ({ navigation }) => {
     password: '',
     repassword: '',
   });
-
   const [stats, setStats] = useState({
     showPass: true,
     mailonfocus: false,
