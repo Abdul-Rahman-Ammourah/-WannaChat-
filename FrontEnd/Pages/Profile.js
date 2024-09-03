@@ -1,7 +1,7 @@
 import React,{useContext, useState} from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions, Modal, FlatList, ScrollView } from 'react-native';
 import MePhoto from '../Assets/Photos/MePhoto.jpg';
-import { NavContext } from '../Navigation_Remove_Later/Context';
+import { NavContext } from '../Context/Context';
 //Icons
 import Icon from 'react-native-vector-icons/MaterialIcons';
 export default function Profile ({navigation})  {

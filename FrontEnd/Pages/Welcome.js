@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Animated, Easing, TextInput, KeyboardAvoidingVi
 import { LoginValidation } from '../Services/InputValidation';
 import { Button } from 'react-native-paper';
 // Context
-import { NavContext } from '../Navigation_Remove_Later/Context';
+import { NavContext } from '../Context/Context';
 // API
 import { login } from '../API/api';
 // End to End encryption

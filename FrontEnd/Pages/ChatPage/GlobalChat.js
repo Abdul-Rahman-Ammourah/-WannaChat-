@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { View, Text, TextInput, Button, FlatList, StyleSheet } from "react-native";
-import { NavContext } from "../../Navigation_Remove_Later/Context";
+import { NavContext } from "../../Context/Context";
 import { useSignalR } from '../../API/api'; // Import the SignalR hook
 
 export default function GlobalChat() {

@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity, FlatList, Alert, TextInput } from "react-native";
 import { Modal, Searchbar, Snackbar, Button,IconButton } from "react-native-paper";
 import { getUser } from "../API/api";
-import { NavContext } from "../Navigation_Remove_Later/Context";
+import { NavContext } from "../Context/Context";
 import { EmailCheck } from "../Services/InputValidation";
 //Assets
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';

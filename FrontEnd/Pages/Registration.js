@@ -9,7 +9,7 @@ import { RegisterValidation } from '../Services/InputValidation';
 //api
 import { register } from '../API/api';
 //Context
-import { NavContext } from '../Navigation_Remove_Later/Context';
+import { NavContext } from '../Context/Context';
 //End to End encryption
 import End2End from '../Services/End2End';
 const RegisterScreen = ({ navigation }) => {

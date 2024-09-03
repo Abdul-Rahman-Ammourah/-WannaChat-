@@ -5,7 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, StyleSheet } from "react-native";
 // Navigation
-import { NavProvider } from "./Navigation_Remove_Later/Context";
+import { NavProvider } from "./Context/Context";
 // Pages
 import Welcome from "./Pages/Welcome";
 import Home from "./Pages/Home";

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, KeyboardAvoidingView, Platform } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { NavContext } from '../../Navigation_Remove_Later/Context';
+import { NavContext } from '../../Context/Context';
 import { fetchMessages, handleSend ,useSignalR} from './ChatFunctions';
 
 export default function Chat({ navigation }) {
