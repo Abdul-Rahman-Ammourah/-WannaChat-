@@ -10,11 +10,10 @@ import { NavProvider } from "./Context/Context";
 import Welcome from "./Pages/Welcome";
 import Home from "./Pages/Home";
 import Register from "./Pages/Registration";
-import Call from "./Pages/Call";
 import Profile from "./Pages/Profile";
 import Chat from "./Pages/ChatPage/Chat";
 import Settings from "./Pages/Settings";
-
+import ChatScreen from "./Pages/ChatPage/ChatTestSignalR/ChatTest";
 const Stack = createNativeStackNavigator();
 
 function MainNavigator() {
@@ -26,12 +25,11 @@ function MainNavigator() {
       <Stack.Screen name="Welcome" component={Welcome} />
       <Stack.Screen name="Home" component={Home} />
       <Stack.Screen name="Register" component={Register} />
-      {/* Later */}
-      <Stack.Screen name="Call" component={Call} /> 
-      {/* Later */}
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="Chat" component={Chat} />
       <Stack.Screen name="Settings" component={Settings} />
+      {/* TEMP */}
+      <Stack.Screen name="ChatScreen" component={ChatScreen} />
     </Stack.Navigator>
   );
 }

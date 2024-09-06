@@ -2,30 +2,62 @@ import React, { useState, useEffect, useRef, useContext } from "react";
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, KeyboardAvoidingView, Platform } from "react-native";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { NavContext } from '../../Context/Context';
-import { fetchMessages, SendMessage } from './ChatFunctions';
+import End2End from "../../Services/End2End";
+import useSignalR from "./ChatTestSignalR/ChatHook";
 
 export default function Chat({ navigation }) {
-    const { senderEmail, receiverEmail, publicKey, privateKey, ChatUsername } = useContext(NavContext);
-    const [Messages, setMessages] = useState([]);
+    const { senderEmail, receiverEmail, publicKey, privateKey, ChatUsername, conID } = useContext(NavContext);
+    const [RevMessages, setRevMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const flatListRef = useRef(null);
-
-    // Fetch messages when the component mounts
-    useEffect(() => {
-        fetchMessages(senderEmail, privateKey, setMessages);
-    }, [senderEmail, privateKey]);
+    const { messages, sendMessage, isConnected, connectionId } = useSignalR(senderEmail);
 
     // Handle send message
     const handleSendMessage = () => {
         if (newMessage.trim() === '') {
             return;
         }
-        SendMessage(newMessage, senderEmail, receiverEmail, publicKey, setMessages, flatListRef, setNewMessage);
+        sendMessage(conID, newMessage);
+        setNewMessage(""); // Clear input after sending the message
     };
 
+    useEffect(() => {
+        const fetchMessages = async () => {
+            try {
+                const decryptedMessages = await Promise.all(
+                    messages.map(async (message) => {
+                        const decryptedText = await End2End.decryptMessage(message.message, privateKey);
+                        return {
+                            ...message,
+                            id: message.fromConnectionId + Date.now().toString(), // Create a unique id
+                            message: decryptedText,
+                        };
+                    })
+                );
+
+                // Filter out duplicate messages based on unique IDs
+                setRevMessages((prevMessages) => {
+                    const newMessages = decryptedMessages.filter(
+                        (newMsg) => !prevMessages.some((prevMsg) => prevMsg.id === newMsg.id)
+                    );
+                    return [...prevMessages, ...newMessages];
+                });
+            } catch (error) {
+                console.error("Error fetching or decrypting messages:", error);
+            }
+        };
+
+        if (messages.length > 0) {
+            fetchMessages();
+        }
+    }, [messages]);
+
+    console.log(RevMessages);
+    
+    // Render each message (sent or received)
     const renderItem = ({ item }) => (
-        <View style={[styles.message, item.type === 'sent' ? styles.sentMessage : styles.receivedMessage]}>
-            <Text style={styles.messageText}>{item.text}</Text>
+        <View style={[styles.message, item.fromConnectionId === connectionId ? styles.sentMessage : styles.receivedMessage]}>
+            <Text style={styles.messageText}>{item.message}</Text>
         </View>
     );
 
@@ -43,13 +75,16 @@ export default function Chat({ navigation }) {
 
             <FlatList
                 ref={flatListRef}
-                data={Messages}
+                data={RevMessages}
                 renderItem={renderItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item.id.toString()} // Ensure a unique key for FlatList
                 contentContainerStyle={styles.messagesContainer}
                 onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
                 onLayout={() => flatListRef.current?.scrollToEnd({ animated: true })}
             />
+
+            <Text>My connectionID: {connectionId}</Text>
+            <Text>Receiver connectionID: {conID}</Text>
 
             <KeyboardAvoidingView
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}

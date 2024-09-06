@@ -10,13 +10,7 @@ import filePic from "../Assets/Photos/MePhoto.jpg";
 
 export default function Home({ navigation }) {
     const { setReceiverEmail,setPublicKey,setChatUsername } = useContext(NavContext);
-    const [users, setUsers] = useState([
-        {
-            username: "Global Chat",
-            email: "Global",
-            ProfilePic: filePic
-        }
-    ]);
+    const [users, setUsers] = useState([]);
     const [addEmail, setAddEmail] = useState("");
     const [search, setSearch] = useState("");
     const [visible, setVisible] = useState({
@@ -30,7 +24,7 @@ export default function Home({ navigation }) {
                 onPress={() => {
                     setReceiverEmail(item.email);
                     setChatUsername(item.username);
-                    navigation.navigate("GlobalChat");
+                    navigation.navigate("Chat");
                 }}
             >
                 <View style={styles.contact}>
@@ -151,6 +145,7 @@ export default function Home({ navigation }) {
             >
                 User Already Exists
             </Snackbar>
+            <Button onPress={() => navigation.navigate("ChatScreen")} style={{ borderColor: 'black', borderWidth: 1 }}> TEST CHAT </Button>
         </View>
     );
 }

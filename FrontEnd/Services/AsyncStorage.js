@@ -1,35 +1,38 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+class AsyncStorageUtil {
+  // Store user data (email, privateKey)
+  static async storeUserData(email, userName, EncryptedPrivateKey) {
+    try {
+      const userData = { email,userName, EncryptedPrivateKey };
+      await AsyncStorage.setItem('userData', JSON.stringify(userData));
+    } catch (error) {
+      console.error('Error storing user data:', error);
+      throw error;
+    }
+  }
 
-export default class AsyncStorageService {
-    
-    // Set Token
-    static async SetToken(token) {
-        try {
-          await AsyncStorage.setItem('@user_token', token);
-          console.log("Token Stored");
-        } catch (error) {
-          console.error('Error storing key:', error);
-        }
+  // Retrieve user data (email, privateKey)
+  static async getUserData() {
+    try {
+      const userData = await AsyncStorage.getItem('userData');
+      if (userData !== null) {
+        return JSON.parse(userData);
+      }
+      return null; // Return null if no user data is found
+    } catch (error) {
+      console.error('Error retrieving user data:', error);
+      throw error;
     }
-    // Get Token
-    static async GetToken() {
-        try {
-          const value = await AsyncStorage.getItem('@user_token');
-          if (value !== null) {
-            console.log("Token Retrieved");
-            return value;
-          }
-        } catch (error) {
-          console.error('Error retrieving key:', error);
-        }
+  }
+
+  // Remove user data (on logout)
+  static async clearUserData() {
+    try {
+      await AsyncStorage.removeItem('userData');
+    } catch (error) {
+      console.error('Error clearing user data:', error);
+      throw error;
     }
-    // Remove Token
-    static async RemoveToken() {
-        try {
-          await AsyncStorage.removeItem('@user_token');
-          console.log("Token Removed");
-        } catch (error) {
-          console.error('Error removing key:', error);
-        }
-    }
+  }
 }
+export default AsyncStorageUtil;
