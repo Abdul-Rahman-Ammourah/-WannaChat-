@@ -21,13 +21,13 @@ export default function HomePage() {
     try {
       const response = await getUser(email);
       if (response) {
-        const alreadyExists = users.some(user => user.username.toLowerCase() === response.username.toLowerCase());
+        const alreadyExists = users.some(user => user.email.toLowerCase() === response.email.toLowerCase());
         if (!alreadyExists) {
           // Fetch the Profile Pic from the database
           setPublicKey(response.publicKey);
           setUsers(prevUsers => [
             ...prevUsers,
-            { username: response.username, email, ProfilePic: 'https://randomuser.me/api/portraits/men/36.jpg' }
+            { username: response.username, email, ProfilePic: response.profilePic },
           ]);
         } else {
           Alert.alert('User Exists', 'This user already exists in your contact list.');
@@ -58,7 +58,7 @@ export default function HomePage() {
         <Avatar
           rounded
           size={40}
-          source={{ uri: item.ProfilePic || 'https://randomuser.me/api/portraits/men/36.jpg' }}
+          source={item.ProfilePic}
           containerStyle={{ backgroundColor: '#1E88E5' }}
           onLongPress={() => setprofileCardVisible(true)}
         />

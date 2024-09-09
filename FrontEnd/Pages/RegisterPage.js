@@ -5,14 +5,13 @@ import AsyncStorageUtil from '../Services/AsyncStorage';
 // Validation
 import { RegisterValidation } from '../Services/InputValidation';
 // API
-import { register } from '../API/api';
+import { register,validateDub } from '../API/api';
 // Context
 import { NavContext } from '../Context/Context';
 // End-to-End encryption
 import End2End from '../Services/End2End';
-
 export default function RegisterPage({ navigation }) {
-  const { setSenderEmail, setPrivateKey, setUsername } = useContext(NavContext);
+  const { setSenderEmail, setPrivateKey, setUsername, setIsLoggedIn, userProfilePic } = useContext(NavContext);
 
   const [user, setUser] = useState({
     email: '',
@@ -39,25 +38,18 @@ export default function RegisterPage({ navigation }) {
     setUser({ ...user, repassword: text });
     setStats({ ...stats, invalidRepeatPass: text !== user.password });
   };
-
+console.log(userProfilePic)
   const handleRegister = async () => {
     const { emailV, userV, passwordV } = RegisterValidation(user.email, user.username, user.password);
     if (emailV && userV && passwordV && user.password === user.repassword) {
       try {
-        const keyPair = await End2End.generateKey();
-        const encryptedPrivateKey = End2End.encryptPrivateKey(keyPair.private, user.password);
-        const response = await register(user.email, user.username, user.password, keyPair.public, encryptedPrivateKey);
-        setPrivateKey(keyPair.private);
-        setSenderEmail(user.email);
-        setUsername(user.username);
-        try
-        {
-          await AsyncStorageUtil.storeUserData(user.email, user.username, keyPair.private);
-        }catch(error)
-        {
-          console.error('Error storing user data:', error);
+        const response = await validateDub(user.email);
+        if (!response.data) {
+          navigation.navigate('ChooseProPic', { user: user });
         }
-        navigation.navigate('HomePage');
+        else{
+          Alert.alert('email already in use');
+        }
       } catch (error) {
         console.error('Register error', error); 
         if (error.response) {

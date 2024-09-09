@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 class AsyncStorageUtil {
   // Store user data (email, privateKey)
-  static async storeUserData(email, userName, PrivateKey) {
+  static async storeUserData(email, userName, PrivateKey, password) {
     try {
-      const userData = { email,userName, PrivateKey};
+      const userData = { email,userName, PrivateKey, password};
       await AsyncStorage.setItem('userData', JSON.stringify(userData));
     } catch (error) {
       console.error('Error storing user data:', error);

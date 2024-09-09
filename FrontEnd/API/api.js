@@ -6,9 +6,9 @@ const api = axios.create({
 });
 
 // Register API
-export const register = async (email, username, password,publicKey,privateKey) => {
+export const register = async (email, username, password,publicKey,privateKey, ProfilePic) => {
   try {
-    const response = await api.post('/Register', { email, username, password,publicKey,privateKey });
+    const response = await api.post('/Register', { email, username, password,publicKey,privateKey,ProfilePic });
     return response.data;
   } catch (error) {
     console.error('Register Error:', error.message);
@@ -60,6 +60,33 @@ export const getUser = async (Email) => {
     return response.data;
   }catch(error){
     console.error('Get User Error:',error)
+    throw error;
+  }
+}
+
+// Validate User 
+export const validateUser = async (email,password) => {
+  try {
+    const response = await api.post('/Login/Validate', { email, password });
+    if (response){// you might be dump for this one
+      return response
+    }
+    else
+    {
+      return false
+    }
+  }catch(error){
+    console.error('Validate User Error:',error)
+    throw error;
+  }
+}
+
+export const validateDub = async (Email) => {
+  try {
+    const responce = await api.get('/getUser/CheckDub', { params: { email: Email }});
+    return responce
+  }catch(error){
+    console.error('Validate User Error:',error)
     throw error;
   }
 }

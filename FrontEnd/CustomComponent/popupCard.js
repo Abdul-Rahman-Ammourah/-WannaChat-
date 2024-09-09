@@ -34,7 +34,7 @@ export default function EmailPopup({ visible, onClose, onSubmit, email }) {
           <TouchableOpacity style={styles.closeButton} onPress={onClose} accessibilityLabel="Close">
             <Text style={styles.closeButtonText}>✕</Text>
           </TouchableOpacity>
-          <Text style={styles.title}>Join Our Mailing List</Text>
+          <Text style={styles.title}>Add a friend</Text>
           <View style={styles.inputContainer}>
             <Text style={styles.label}>Email address</Text>
             <TextInput
@@ -47,7 +47,7 @@ export default function EmailPopup({ visible, onClose, onSubmit, email }) {
               accessibilityLabel="Email input"
             />
             <TouchableOpacity style={styles.button} onPress={handleSubmit} accessibilityLabel="Subscribe">
-              <Text style={styles.buttonText}>Add a friend</Text>
+              <Text style={styles.buttonText}>Add</Text>
             </TouchableOpacity>
           </View>
         </View>

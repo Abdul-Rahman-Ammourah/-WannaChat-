@@ -7,7 +7,7 @@ import { login } from '../API/api';
 import { NavContext } from '../Context/Context';
 import AsyncStorageUtil from '../Services/AsyncStorage';
 const WelcomePage = ({ navigation }) => {
-  const { setSenderEmail, setPrivateKey, setUsername,setIsLoggedIn } = useContext(NavContext);
+  const { setSenderEmail, setPrivateKey, setUsername,setIsLoggedIn,setUserProfilePic } = useContext(NavContext);
   const [showpass, setShowpass] = useState(true);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -29,7 +29,6 @@ const WelcomePage = ({ navigation }) => {
       useNativeDriver: true,
     }).start();
   };
-
   const handleLogin = async () => {
     const valid = LoginValidation(user.email, user.password);
     if (valid) {
@@ -41,9 +40,11 @@ const WelcomePage = ({ navigation }) => {
           setPrivateKey(decryptedPrivateKey);
           setSenderEmail(user.email);
           setUsername(response.username);
+          setUserProfilePic(response.profilePic);
+          setIsLoggedIn(true);
           try
           {
-            await AsyncStorageUtil.storeUserData(user.email, response.username, decryptedPrivateKey);
+            await AsyncStorageUtil.storeUserData(user.email, response.username, decryptedPrivateKey, user.password);
 
           }catch(error)
           {

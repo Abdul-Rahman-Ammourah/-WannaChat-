@@ -66,7 +66,7 @@ export default function ProfilePage() {
               <ListItem.Subtitle>{userData.email}</ListItem.Subtitle>
             </ListItem.Content>
           </ListItem>
-          <ListItem bottomDivider onPress={() => console.log('Navigate to Account Settings')}>
+          <ListItem bottomDivider onPress={() => navigation.navigate('Settings')}>
             <ListItem.Content>
               <ListItem.Title>Account Settings</ListItem.Title>
             </ListItem.Content>
