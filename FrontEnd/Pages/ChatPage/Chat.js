@@ -6,7 +6,7 @@ import End2End from "../../Services/End2End";
 import useSignalR from "./ChatTestSignalR/ChatHook";
 
 export default function Chat({ navigation }) {
-    const { senderEmail, receiverEmail, publicKey, privateKey, ChatUsername, conID } = useContext(NavContext);
+    const { senderEmail, receiverEmail, privateKey, ChatUsername, conID } = useContext(NavContext);
     const [RevMessages, setRevMessages] = useState([]);
     const [newMessage, setNewMessage] = useState("");
     const flatListRef = useRef(null);
@@ -50,10 +50,7 @@ export default function Chat({ navigation }) {
         if (messages.length > 0) {
             fetchMessages();
         }
-    }, [messages]);
-
-    console.log(RevMessages);
-    
+    }, [messages]);    
     // Render each message (sent or received)
     const renderItem = ({ item }) => (
         <View style={[styles.message, item.fromConnectionId === connectionId ? styles.sentMessage : styles.receivedMessage]}>

@@ -6,7 +6,7 @@ export default function Settings({navigation}) {
     return (
         <View>
             <Text>Settings Page</Text>
-            <Button onPress={() => navigation.navigate('Profile')} style={{ borderColor: 'black', borderWidth: 1 }}> Go back</Button>
+            <Button onPress={() => navigation.navigate('ProfilePage')} style={{ borderColor: 'black', borderWidth: 1 }}> Go back</Button>
         </View>
     );
 }

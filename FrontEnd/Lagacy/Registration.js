@@ -20,8 +20,8 @@ const RegisterScreen = ({ navigation }) => {
   });
   const [stats, setStats] = useState({
     showPass: true,
-    mailonfocus: false,
-    usernameonfocus: false,
+    ms: false,
+    usernameonfailonfocuocus: false,
     passonfocus: false,
     repassonfocus: false,
     invalidemail: false,
