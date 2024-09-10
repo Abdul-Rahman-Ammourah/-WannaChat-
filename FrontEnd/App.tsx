@@ -8,14 +8,6 @@ import { NavContext } from "./Context/Context";
 // Navigation
 import { NavProvider } from "./Context/Context";
 
-// Old UI Pages + test
-import Welcome from "./Lagacy/Welcome";
-import Home from "./Lagacy/Home";
-import Register from "./Lagacy/Registration";
-import Profile from "./Lagacy/Profile";
-import Chat from "./Pages/ChatPage/Chat";
-import ChatScreen from "./Pages/ChatPage/ChatTestSignalR/ChatTest";
-
 // New_UI_Pages
 import ChatPage from "./Pages/ChatPage/ChatPage";
 import HomePage from "./Pages/HomePage";
