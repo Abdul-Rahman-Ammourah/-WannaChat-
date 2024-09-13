@@ -1,21 +1,22 @@
 import { useEffect, useState, useContext } from 'react';
 import * as SignalR from '@microsoft/signalr';
-import { NavContext } from '../../../Context/Context';
-import End2End from '../../../Services/End2End';
+import { NavContext } from '../../Context/Context';
+import End2End from '../../Services/End2End';
 
 const useSignalR = (senderEmail) => {
-  const { setConID, receiverEmail, publicKey, privateKey } = useContext(NavContext);
+  const { setConID, receiverEmail, publicKey,token } = useContext(NavContext);
 
   const serverUrl = 'https://charming-hornet-finally.ngrok-free.app/Chathub';
   const [connection, setConnection] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
   const [connectionId, setConnectionId] = useState(null);
-
   useEffect(() => {
     const connect = async () => {
       const newConnection = new SignalR.HubConnectionBuilder()
-        .withUrl(serverUrl)
+        .withUrl(serverUrl,{
+          accessTokenFactory: () => token,
+        })
         .withAutomaticReconnect()
         .build();
 

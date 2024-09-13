@@ -5,7 +5,7 @@ import { Text, Input, Button } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { NavContext } from '../../Context/Context';
 import End2End from "../../Services/End2End";
-import useSignalR from "./ChatTestSignalR/ChatHook";
+import useSignalR from "./ChatHook";
 
 export default function ChatPage({ navigation }) {
   const { senderEmail, receiverEmail, privateKey, ChatUsername, conID } = useContext(NavContext);
@@ -113,13 +113,6 @@ export default function ChatPage({ navigation }) {
           inputContainerStyle={styles.inputInner}
           rightIcon={
             <View style={styles.sendButtonContainer}>
-            <Icon
-              name="emoji-emotions"
-              size={32}
-              color="black"
-              onPress={() => console.log('Emoji pressed')}
-              containerStyle={styles.sendButton}
-            />
             <Button
               title="Send"
               onPress={handleSendMessage}

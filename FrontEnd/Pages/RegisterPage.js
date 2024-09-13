@@ -38,7 +38,6 @@ export default function RegisterPage({ navigation }) {
     setUser({ ...user, repassword: text });
     setStats({ ...stats, invalidRepeatPass: text !== user.password });
   };
-console.log(userProfilePic)
   const handleRegister = async () => {
     const { emailV, userV, passwordV } = RegisterValidation(user.email, user.username, user.password);
     if (emailV && userV && passwordV && user.password === user.repassword) {

@@ -84,6 +84,7 @@ export default function HomePage() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
+
         <SearchBar
           placeholder="Search..."
           onChangeText={setSearch}

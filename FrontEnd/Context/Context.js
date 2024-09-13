@@ -15,6 +15,7 @@ export const NavProvider = ({ children }) => {
     const [privateKey, setPrivateKey] = useState('');//for decryption
     const [userProfilePic, setUserProfilePic] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [token, setToken] = useState('');
     return (
         <NavContext.Provider value={{ senderEmail, setSenderEmail,
                                       receiverEmail,setReceiverEmail,
@@ -25,7 +26,8 @@ export const NavProvider = ({ children }) => {
                                       conID, setConID,
                                       targetProfilePic, setTargetProfilePic,
                                       userProfilePic, setUserProfilePic,
-                                      isLoggedIn, setIsLoggedIn
+                                      isLoggedIn, setIsLoggedIn,
+                                      token, setToken
                                       }}>
             {children}
         </NavContext.Provider>

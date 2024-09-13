@@ -3,7 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, FlatList, Keyboard
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { NavContext } from '../../Context/Context';
 import End2End from "../../Services/End2End";
-import useSignalR from "./ChatTestSignalR/ChatHook";
+import useSignalR from "./ChatHook";
 
 export default function Chat({ navigation }) {
     const { senderEmail, receiverEmail, privateKey, ChatUsername, conID } = useContext(NavContext);

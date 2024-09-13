@@ -5,6 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { View, StyleSheet } from "react-native";
 import { NavContext } from "./Context/Context";
+import ValidateUser from "./Services/ValidateUserAsync";
 // Navigation
 import { NavProvider } from "./Context/Context";
 
@@ -50,7 +51,7 @@ export default function App() {
     <NavProvider>
       <NavigationContainer>
         <View style={styles.container}>
-          {/* <ValidateUser /> */}
+          <ValidateUser />
           <View style={styles.content}>
             <MainNavigator />
           </View>

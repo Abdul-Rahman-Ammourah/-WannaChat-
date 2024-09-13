@@ -7,7 +7,7 @@ import { login } from '../API/api';
 import { NavContext } from '../Context/Context';
 import AsyncStorageUtil from '../Services/AsyncStorage';
 const WelcomePage = ({ navigation }) => {
-  const { setSenderEmail, setPrivateKey, setUsername,setIsLoggedIn,setUserProfilePic } = useContext(NavContext);
+  const { setSenderEmail, setPrivateKey, setUsername,setIsLoggedIn,setUserProfilePic,setToken } = useContext(NavContext);
   const [showpass, setShowpass] = useState(true);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -42,13 +42,14 @@ const WelcomePage = ({ navigation }) => {
           setUsername(response.username);
           setUserProfilePic(response.profilePic);
           setIsLoggedIn(true);
+          setToken(response.token);
           try
           {
-            await AsyncStorageUtil.storeUserData(user.email, response.username, decryptedPrivateKey, user.password);
-
+            await AsyncStorageUtil.storeUserData(user.email, response.username, decryptedPrivateKey, user.password,response.profilePic);
+            await AsyncStorageUtil.storeToken(response.token);
           }catch(error)
           {
-            console.error('Error storing user data:', error);
+            console.error('Error storing user data or token:', error);
           }
           navigation.navigate('HomePage');
         } else {
