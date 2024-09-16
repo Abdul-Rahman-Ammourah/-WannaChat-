@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://charming-hornet-finally.ngrok-free.app', 
-  timeout: 4000,  // Optional: Set a timeout for requests
+  baseURL: 'https://Your-Server-URL', 
+  timeout: 4000,  
 });
 
 // Register API
