@@ -1,2 +1,26 @@
-/bin
-/obj
+# Ignore build output
+bin/
+obj/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.csproj.user
+*.sln.docstates
+
+# Ignore secrets and config files
+appsettings.Development.json
+*.key
+*.pfx
+
+# Ignore local files
+*.log
+*.tmp
+*.bak
+
+# Ignore NuGet packages
+*.nupkg
+*.snupkg
+
+# Ignore Visual Studio Code settings
+.vscode/
