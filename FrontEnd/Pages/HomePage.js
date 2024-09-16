@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { NavContext } from '../Context/Context';
 import { getUser } from '../API/api';
 import { EmailCheck } from '../Services/InputValidation';
-import EmailPopup from '../CustomComponent/popupCard';
+import EmailPopup from '../CustomComponent/Emailpopup';
 import UserProfileCard from '../CustomComponent/ProfileCard';
 export default function HomePage() {
   const { setReceiverEmail, setPublicKey, setChatUsername,userProfilePic } = useContext(NavContext);
@@ -32,13 +32,15 @@ export default function HomePage() {
         } else {
           Alert.alert('User Exists', 'This user already exists in your contact list.');
         }
+      }else{
+        Alert.alert("Not Found","User Not Found");
       }
     } catch (error) {
       Alert.alert('Error', 'Could not fetch the user. Please try again.');
     }
   };
 
-  const handleAddUser = ( email) => {
+  const handleAddUser = ( email ) => {
     if (EmailCheck(email)) {
       fetchUser(email);
       setaddUserVisible(false); // Close the popup after adding the user

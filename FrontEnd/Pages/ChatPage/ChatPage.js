@@ -84,7 +84,7 @@ export default function ChatPage({ navigation }) {
       {/* Header */}
       <View style={styles.header}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-back" size={26} color="white" />
+          <Icon name="arrow-back" size={28} color="white" />
       </TouchableOpacity>
         <Text style={conID != "" ? styles.headerTitle : styles.headerTitleOffline}>{ChatUsername}</Text>
       </View>
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between', // This will space the back button and title properly
     height: 50,
     backgroundColor: '#1E88E5',
     paddingHorizontal: 15,
@@ -143,19 +143,15 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
-    position: 'absolute',
-    left: 0,
-    right: 0,
     textAlign: 'center',
+    flex: 1, // This will center the title while keeping space for the back button
   },
   headerTitleOffline: {
     color: 'black',
     fontSize: 18,
     fontWeight: 'bold',
-    position: 'absolute',
-    left: 0,
-    right: 0,
     textAlign: 'center',
+    flex: 1,
     opacity: 0.5,
   },
   chatList: {

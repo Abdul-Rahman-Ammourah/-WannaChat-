@@ -68,25 +68,38 @@ export const getUser = async (Email) => {
 export const validateUser = async (email,password) => {
   try {
     const response = await api.post('/Login/Validate', { email, password });
-    if (response){// you might be dump for this one
-      return response
-    }
-    else
-    {
-      return false
-    }
+    return response.data
   }catch(error){
     console.error('Validate User Error:',error)
     throw error;
   }
 }
-
 export const validateDub = async (Email) => {
   try {
     const responce = await api.get('/getUser/CheckDub', { params: { email: Email }});
     return responce
   }catch(error){
-    console.error('Validate User Error:',error)
+    console.error('ValidateDub User Error:',error)
+    throw error;
+  }
+}
+// Update User
+export const updateUser = async (OldEmail,NewEmail, Username, ProfilePic) => {
+  try {
+    const response = await api.post('/UpdateUser', { OldEmail,NewEmail, Username, ProfilePic });
+    return response
+  }catch(error){
+    console.error('Update User Error:',error)
+    throw error;
+  }
+}
+// Delete User
+export const deleteUser = async (email) => {
+  try {
+    const response = await api.post('/DeleteUser', { email });
+    return response
+  }catch(error){
+    console.error('Delete User Error:',error)
     throw error;
   }
 }

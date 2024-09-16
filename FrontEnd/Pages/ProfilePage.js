@@ -1,35 +1,86 @@
-import React, { useState,useContext } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState, useContext } from 'react';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Text, Avatar, Button, ListItem, Overlay, Input } from '@rneui/themed';
-import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { NavContext } from '../Context/Context';
-export default function ProfilePage() {
-  const {senderEmail,Username,setPrivateKey,setUsername,setSenderEmail,userProfilePic} = useContext(NavContext)
-  const navigation = useNavigation();
-  const [userData, setUserData] = useState({
-    name: Username,
-    email: senderEmail,
-    profilePic: userProfilePic,
+import { validateUser, updateUser } from '../API/api';
+import ProfilePopup from '../CustomComponent/ProfilePopUp';
+import { EmailCheck,UsernameCheck } from '../Services/InputValidation';
+// Profile Pictures
+const profilePics = [
+  { id: 1, path: require("../Assets/ProfilePicSet/ProfileSet3.jpg") },
+  { id: 2, path: require("../Assets/ProfilePicSet/ProfileSet1.jpg") },
+  { id: 3, path: require("../Assets/ProfilePicSet/ProfileSet2.jpg") },
+  { id: 4, path: require("../Assets/ProfilePicSet/ProfileSet.jpg") },
+  { id: 5, path: require("../Assets/ProfilePicSet/ProfileSet4.jpg") },
+  { id: 6, path: require("../Assets/ProfilePicSet/ProfileSet5.jpg") },
+];
+
+export default function ProfilePage({ navigation }) {
+  const { senderEmail, Username, setPrivateKey, setUsername, setSenderEmail, userProfilePic, setUserProfilePic, setToken,setIsLoggedIn } = useContext(NavContext);
+  const [editedData, setEditedData] = useState({
+    Email: '',
+    username: '',
+    profilePic: 0,
   });
   const [isEditing, setIsEditing] = useState(false);
-  const [editedData, setEditedData] = useState(userData);
-
-  const handleEdit = () => {
-    setIsEditing(true);
+  const [selectedPic, setSelectedPic] = useState(null);
+  const [showPassVal, setShowPassVal] = useState(false);
+  const [invalidInput, setInvalidInput] = useState({
+    Email: false,
+    username: false,
+  });
+  const handleSave = async ( pass ) => {
+    if (pass === '') {
+      console.log(senderEmail,editedData.Email,editedData.username,selectedPic.path, pass)
+      return
+    }
+    try{
+      console.log(senderEmail,editedData.Email,editedData.username,selectedPic.path, pass)
+      const responce = await validateUser(senderEmail,pass);
+      if (responce.data) {
+        try{
+          const res = await updateUser(senderEmail,editedData.Email,editedData.username,selectedPic.path);
+          if (res) {
+            setUserProfilePic(selectedPic.path);
+            setUsername(editedData.username);
+            setSenderEmail(editedData.Email);
+            setIsEditing(false);
+            setShowPassVal(false);
+            setEditedData({});
+          }
+        }catch(error){
+          console.log("Error while updating",error);
+        }
+        
+      }else{
+        Alert.alert("Wrong Password","Please Enter Correct Password");
+      }
+    }catch(error){
+      console.log("error",error);
+    }
+    
   };
-
-  const handleSave = () => {
-    setUserData(editedData);
-    setIsEditing(false);
-    // Implement API call to update user data
-  };
+  const handlesubmit = () => {
+    if (EmailCheck(editedData.Email)) {
+        if (UsernameCheck(editedData.username)) {
+            setShowPassVal(true);
+        } else {
+            setInvalidInput({ ...invalidInput, username: true });
+        }
+    } else {
+        setInvalidInput({ ...invalidInput, Email: true });
+    }
+};
 
   const handleLogout = () => {
-    setPrivateKey('')
-    setUsername('')
-    setSenderEmail('')
+    setPrivateKey('');
+    setUsername('');
+    setSenderEmail('');
+    setUserProfilePic('');
+    setToken('');
+    setIsLoggedIn(false);
     navigation.navigate('WelcomePage');
   };
 
@@ -40,35 +91,27 @@ export default function ProfilePage() {
           <Icon name="arrow-back" size={28} color="white" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Profile</Text>
-        <TouchableOpacity onPress={handleEdit}>
+        <TouchableOpacity onPress={() => setIsEditing(true)}>
           <Icon name="edit" size={24} color="white" />
         </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.profileHeader}>
-          <Avatar
-            size="xlarge"
-            rounded
-            source={userData.profilePic}
-            containerStyle={styles.avatar}
-          />
-          <Text h2>{userData.name}</Text>
-          <Text style={styles.username}>{userData.username}</Text>
+          <Avatar size="xlarge" rounded source={userProfilePic} containerStyle={styles.avatar} />
+          <Text h2>{Username}</Text>
         </View>
-
-        <Text style={styles.bio}>{userData.bio}</Text>
 
         <View style={styles.infoContainer}>
           <ListItem bottomDivider>
             <ListItem.Content>
               <ListItem.Title>Email</ListItem.Title>
-              <ListItem.Subtitle>{userData.email}</ListItem.Subtitle>
+              <ListItem.Subtitle>{senderEmail}</ListItem.Subtitle>
             </ListItem.Content>
           </ListItem>
           <ListItem bottomDivider onPress={() => navigation.navigate('Settings')}>
             <ListItem.Content>
-              <ListItem.Title>Account Settings</ListItem.Title>
+              <ListItem.Title>App Settings</ListItem.Title>
             </ListItem.Content>
             <ListItem.Chevron />
           </ListItem>
@@ -85,25 +128,40 @@ export default function ProfilePage() {
       <Overlay isVisible={isEditing} onBackdropPress={() => setIsEditing(false)}>
         <View style={styles.overlayContainer}>
           <Text h4 style={styles.overlayTitle}>Edit Profile</Text>
+          <View style={styles.gridContainer}>
+            {profilePics.map((pic) => (
+              <TouchableOpacity
+                key={pic.id}
+                style={[
+                  styles.picContainer,
+                  selectedPic && selectedPic.id === pic.id && styles.selectedPicContainer,
+                ]}
+                onPress={() => setSelectedPic(pic)}
+              >
+                <Image source={pic.path} style={styles.profilePic} />
+              </TouchableOpacity>
+            ))}
+          </View>
+          {invalidInput.Email && <Text style={styles.errorText}>Invalid Email</Text>}
           <Input
-            label="Name"
-            value={editedData.name}
-            onChangeText={(text) => setEditedData({ ...editedData, name: text })}
+            label="Email"
+            value={editedData.Email}
+            onChangeText={(text) => setEditedData({ ...editedData, Email: text })}
           />
+          {invalidInput.username && <Text style={styles.errorText}>Invalid Username</Text>}
           <Input
             label="Username"
             value={editedData.username}
             onChangeText={(text) => setEditedData({ ...editedData, username: text })}
           />
-          <Input
-            label="Bio"
-            value={editedData.bio}
-            onChangeText={(text) => setEditedData({ ...editedData, bio: text })}
-            multiline
-          />
-          <Button title="Save" onPress={handleSave} buttonStyle={styles.saveButton} />
+          <Button title="Save" onPress={handlesubmit} buttonStyle={styles.saveButton} />
         </View>
       </Overlay>
+      <ProfilePopup 
+        visible={showPassVal} 
+        onClose={() => setShowPassVal(false)}
+        onSubmit={handleSave}
+      />
     </SafeAreaView>
   );
 }
@@ -136,16 +194,6 @@ const styles = StyleSheet.create({
   avatar: {
     marginBottom: 10,
   },
-  username: {
-    fontSize: 16,
-    color: '#666',
-  },
-  bio: {
-    fontSize: 16,
-    textAlign: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 20,
-  },
   infoContainer: {
     backgroundColor: '#fff',
     marginBottom: 20,
@@ -167,5 +215,32 @@ const styles = StyleSheet.create({
   saveButton: {
     backgroundColor: '#1E88E5',
     marginTop: 20,
+  },
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  picContainer: {
+    width: '30%',
+    aspectRatio: 1,
+    marginBottom: 20,
+    borderRadius: 10,
+    overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  selectedPicContainer: {
+    borderColor: '#1E88E5',
+  },
+  profilePic: {
+    width: '100%',
+    height: '100%',
+  },
+  errorText: {
+    color: 'red',
+    marginBottom: 10,
+    textAlign: 'center',
   },
 });
