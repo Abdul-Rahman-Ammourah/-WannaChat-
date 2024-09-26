@@ -65,9 +65,6 @@ export default function Chat({ navigation }) {
                     <Icon name="arrow-left" size={28} color="#000" />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>{ChatUsername}</Text>
-                <TouchableOpacity onPress={() => console.log('Camera pressed')}>
-                    <Icon name="camera" size={28} color="#000" />
-                </TouchableOpacity>
             </View>
 
             <FlatList
@@ -115,6 +112,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 15,
         borderBottomWidth: 1,
         borderBottomColor: '#ddd',
+        
     },
     headerTitle: {
         fontSize: 18,

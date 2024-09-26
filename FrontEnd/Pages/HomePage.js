@@ -1,21 +1,24 @@
 import React, { useContext, useState } from 'react';
-import { View, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { View, StyleSheet, FlatList, Alert,TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text, Avatar, SearchBar, FAB, ListItem } from '@rneui/themed';
+import { Text, Avatar, SearchBar, FAB } from '@rneui/themed';
 import { useNavigation } from '@react-navigation/native';
 import { NavContext } from '../Context/Context';
 import { getUser } from '../API/api';
 import { EmailCheck } from '../Services/InputValidation';
 import EmailPopup from '../CustomComponent/Emailpopup';
 import UserProfileCard from '../CustomComponent/ProfileCard';
+
 export default function HomePage() {
-  const { setReceiverEmail, setPublicKey, setChatUsername,userProfilePic } = useContext(NavContext);
+  const { setReceiverEmail, setPublicKey, setChatUsername, userProfilePic } = useContext(NavContext);
   const navigation = useNavigation();
   const [search, setSearch] = useState('');
   const [users, setUsers] = useState([]);
   const [addEmail, setAddEmail] = useState('');
-  const [addUservisible, setaddUserVisible] = useState(false);
-  const [profileCardVisible, setprofileCardVisible] = useState(false);
+  const [addUserVisible, setAddUserVisible] = useState(false);
+  const [profileCardVisible, setProfileCardVisible] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null); // For managing the selected user for profile card
+
   // Function to fetch user data from the API
   const fetchUser = async (email) => {
     try {
@@ -32,18 +35,18 @@ export default function HomePage() {
         } else {
           Alert.alert('User Exists', 'This user already exists in your contact list.');
         }
-      }else{
-        Alert.alert("Not Found","User Not Found");
+      } else {
+        Alert.alert("Not Found", "User Not Found");
       }
     } catch (error) {
       Alert.alert('Error', 'Could not fetch the user. Please try again.');
     }
   };
 
-  const handleAddUser = ( email ) => {
+  const handleAddUser = (email) => {
     if (EmailCheck(email)) {
       fetchUser(email);
-      setaddUserVisible(false); // Close the popup after adding the user
+      setAddUserVisible(false); // Close the popup after adding the user
       setAddEmail(''); // Reset the email input
     } else {
       Alert.alert('Invalid Email', 'Please enter a valid email address.');
@@ -51,31 +54,43 @@ export default function HomePage() {
   };
 
   const renderChatRoom = ({ item }) => (
-    <ListItem bottomDivider onPress={() => {
-                                setReceiverEmail(item.email);
-                                setChatUsername(item.username);
-                                navigation.navigate("ChatPage");
-          }}
-        >
-        <Avatar
-          rounded
-          size={40}
-          source={item.ProfilePic}
-          containerStyle={{ backgroundColor: '#1E88E5' }}
-          onLongPress={() => setprofileCardVisible(true)}
-        />
+    <TouchableOpacity
+      style={styles.chatRoomContainer}
+      onPress={() => {
+        setReceiverEmail(item.email);
+        setChatUsername(item.username);
+        navigation.navigate("ChatPage");
+      }}
+    >
+    <TouchableOpacity 
+        onPress={() => {
+        setReceiverEmail(item.email);
+        setChatUsername(item.username);
+        navigation.navigate("ChatPage");
+      }}
+        onLongPress={() => {
+        setSelectedUser(item);
+        setProfileCardVisible(true);
+      }}
+      >
+      <Avatar
+        rounded
+        size={45}
+        source={item.ProfilePic}
+        containerStyle={{ backgroundColor: '#1E88E5' }}
+      />
+      </TouchableOpacity>
       {/* User Profile Card */}
-      <UserProfileCard 
-        visible={profileCardVisible}
-        onClose={() => setprofileCardVisible(false)}
+      <UserProfileCard
+        visible={profileCardVisible && selectedUser === item} // Show the profile card only for the selected user
+        onClose={() => setProfileCardVisible(false)}
         user={item}
       />
-      <ListItem.Content>
-        <ListItem.Title>{item.username}</ListItem.Title>
-        <ListItem.Subtitle>{item.email}</ListItem.Subtitle>
-      </ListItem.Content>
-      <Text>{item.timestamp}</Text>
-    </ListItem>
+      <View style={{ marginLeft: 10 }}>
+        <Text style={{ fontWeight: 'bold', fontSize: 16 } }>{item.username}</Text>
+        <Text>Last sent message</Text>
+      </View>
+    </TouchableOpacity>
   );
 
   // Filter users based on search
@@ -86,7 +101,6 @@ export default function HomePage() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-
         <SearchBar
           placeholder="Search..."
           onChangeText={setSearch}
@@ -105,7 +119,7 @@ export default function HomePage() {
       </View>
 
       <FlatList
-        data={filteredUsers} 
+        data={filteredUsers}
         renderItem={renderChatRoom}
         keyExtractor={item => item.email}
         style={styles.chatList}
@@ -113,17 +127,17 @@ export default function HomePage() {
 
       {/* Email Popup */}
       <EmailPopup
-        visible={addUservisible}
-        onClose={() => setaddUserVisible(false)} // Close the modal when the user taps outside or presses the close button
+        visible={addUserVisible}
+        onClose={() => setAddUserVisible(false)} // Close the modal when the user taps outside or presses the close button
         onSubmit={handleAddUser} // Call this function when the user submits the email
         email={addEmail} // Pass the email input value
       />
-      
+
       <FAB
         icon={{ name: 'add', color: 'white' }}
         color="#1E88E5"
         placement="right"
-        onPress={() => setaddUserVisible(true)} // Opens the popup for adding a new user
+        onPress={() => setAddUserVisible(true)} // Opens the popup for adding a new user
       />
     </SafeAreaView>
   );
@@ -155,5 +169,12 @@ const styles = StyleSheet.create({
   },
   chatList: {
     flex: 1,
+  },
+  chatRoomContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
   },
 });

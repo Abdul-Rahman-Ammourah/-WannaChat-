@@ -21,7 +21,7 @@ export default function UserProfileCard({ visible, onClose, user }) {
               <Avatar
                 rounded
                 size="large"
-                source={{ uri: user.ProfilePic || 'https://randomuser.me/api/portraits/men/36.jpg' }}
+                source={user.ProfilePic}
                 containerStyle={styles.avatar}
               />
               <Text h4 style={styles.username}>{user.username}</Text>
