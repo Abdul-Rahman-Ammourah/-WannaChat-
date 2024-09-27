@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useState,useContext } from 'react';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Switch } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text, ListItem, Switch, Button, Header } from '@rneui/themed';
+import { Text, Button } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+//API 
+import { deleteUser } from '../API/api';
 
+import { Card } from 'react-native-elements';
+import { Modal } from 'react-native-paper';
+//Context
+import { NavContext } from '../Context/Context';
+// AsyncStorage
+import AsyncStorageUtil from '../Services/AsyncStorage';
 export default function SettingsPage({ navigation }) {
+  const { senderEmail, setPrivateKey, setUsername, setSenderEmail,setUserProfilePic, setToken,setIsLoggedIn } = useContext(NavContext);
   const [notifications, setNotifications] = useState(true);
   const [darkMode, setDarkMode] = useState(false);
   const [language, setLanguage] = useState(true);
   const [locationSharing, setLocationSharing] = useState(false);
-
+  const [deleteAccount, setDeleteAccount] = useState(false);
   const handleNotificationsToggle = () => {
     setNotifications(!notifications);
     // TODO: Implement notification settings update
@@ -23,16 +32,39 @@ export default function SettingsPage({ navigation }) {
     // TODO: Implement dark mode toggle
   };
 
-
   const handleChangePassword = () => {
     // TODO: Navigate to change password screen
     console.log('Navigate to change password screen');
   };
 
-  const handleDeleteAccount = () => {
-    // TODO: Implement account deletion process
-    console.log('Implement account deletion process');
+  const handleDeleteAccount = async () => {
+    try {
+      const response = await deleteUser(senderEmail); 
+      console.log('Response:', response);
+      if (response) {
+        console.log('Account deleted');
+        setPrivateKey('');
+        setUsername('');
+        setSenderEmail('');
+        setUserProfilePic('');
+        setToken('');
+        setIsLoggedIn(false);
+        setDeleteAccount(false);
+        try{
+          await AsyncStorageUtil.clearUserData();
+          await AsyncStorageUtil.clearToken();
+        }catch(error){
+          console.error('Error clearing user data:', error);
+        }
+        navigation.navigate('WelcomePage'); 
+      } else {
+        console.error('Failed to delete account');
+      }
+    } catch (error) {
+      console.error('Error deleting account:', error);
+    }
   };
+  
 
   return (
     <SafeAreaView style={styles.container}>
@@ -44,67 +76,82 @@ export default function SettingsPage({ navigation }) {
           <Text style={styles.headerTitle}>Profile</Text>
         </View>
       </View>
+
       <ScrollView>
         <View style={styles.section}>
           <Text h4 style={styles.sectionTitle}>Account</Text>
-          <ListItem bottomDivider onPress={handleChangePassword}>
-            <ListItem.Content>
-              <ListItem.Title>Change Password</ListItem.Title>
-            </ListItem.Content>
-            <ListItem.Chevron />
-          </ListItem>
-          <ListItem bottomDivider>
-            <ListItem.Content>
-              <ListItem.Title>Email</ListItem.Title>
-              <ListItem.Subtitle>user@example.com</ListItem.Subtitle>
-            </ListItem.Content>
-          </ListItem>
+
+          <TouchableOpacity onPress={handleChangePassword} style={styles.option}>
+            <Text style={styles.optionTitle}>Change Password</Text>
+            <Icon name="chevron-right" size={24} />
+          </TouchableOpacity>
         </View>
 
         <View style={styles.section}>
           <Text h4 style={styles.sectionTitle}>Notifications</Text>
-          <ListItem bottomDivider>
-            <ListItem.Content>
-              <ListItem.Title>Push Notifications</ListItem.Title>
-            </ListItem.Content>
+          <View style={styles.option}>
+            <Text style={styles.optionTitle}>Push Notifications</Text>
             <Switch value={notifications} onValueChange={handleNotificationsToggle} />
-          </ListItem>
+          </View>
         </View>
 
         <View style={styles.section}>
           <Text h4 style={styles.sectionTitle}>Privacy</Text>
-          <ListItem bottomDivider>
-            <ListItem.Content>
-              <ListItem.Title>Privacy options</ListItem.Title>
-            </ListItem.Content>
-            <Switch value={locationSharing} onValueChange={() => console.log("Privacy botton pressed")} />
-          </ListItem>
+          <View style={styles.option}>
+            <Text style={styles.optionTitle}>Location Sharing</Text>
+            <Switch value={locationSharing} onValueChange={() => console.log('Privacy button pressed')} />
+          </View>
         </View>
 
         <View style={styles.section}>
           <Text h4 style={styles.sectionTitle}>App Preferences</Text>
-          <ListItem bottomDivider>
-            <ListItem.Content>
-              <ListItem.Title>Dark Mode</ListItem.Title>
-            </ListItem.Content>
+          <View style={styles.option}>
+            <Text style={styles.optionTitle}>Dark Mode</Text>
             <Switch value={darkMode} onValueChange={handleDarkModeToggle} />
-            <ListItem.Content>
-              <ListItem.Title>Language ({language ? 'en' : 'ar'})</ListItem.Title>
-            </ListItem.Content>
+          </View>
+
+          <View style={styles.option}>
+            <Text style={styles.optionTitle}>Language ({language ? 'en' : 'ar'})</Text>
             <Switch value={language} onValueChange={handleLanguageToggle} />
-          </ListItem>
+          </View>
         </View>
 
         <View style={styles.dangerZone}>
           <Text h4 style={styles.sectionTitle}>Danger Zone</Text>
           <Button
             title="Delete Account"
-            onPress={handleDeleteAccount}
+            onPress={() => setDeleteAccount(true)}
             buttonStyle={styles.deleteButton}
             titleStyle={styles.deleteButtonText}
           />
         </View>
       </ScrollView>
+      <Modal 
+          visible={deleteAccount}
+          onDismiss={() => setDeleteAccount(false)}
+  
+          contentContainerStyle={styles.modalContainer}
+>
+  <Card containerStyle={styles.card}>
+    <Text style={styles.modalText}>Are you sure you want to delete your account? This action cannot be undone.</Text>
+    
+    <View style={styles.modalActions}>
+      <Button
+        title="Confirm"
+        onPress={handleDeleteAccount}
+        buttonStyle={styles.confirmButton}
+        titleStyle={styles.confirmButtonText}
+      />
+      <Button
+        title="Cancel"
+        onPress={() => setDeleteAccount(false)}
+        buttonStyle={styles.cancelButton}
+        titleStyle={styles.cancelButtonText}
+      />
+    </View>
+  </Card>
+</Modal>
+
     </SafeAreaView>
   );
 }
@@ -139,10 +186,27 @@ const styles = StyleSheet.create({
   section: {
     backgroundColor: '#fff',
     marginBottom: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   sectionTitle: {
-    padding: 10,
-    backgroundColor: '#f0f8ff',
+    paddingBottom: 10,
+    fontWeight: 'bold',
+  },
+  option: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  optionTitle: {
+    fontSize: 16,
+  },
+  optionSubtitle: {
+    fontSize: 14,
+    color: '#888',
   },
   dangerZone: {
     marginBottom: 40,
@@ -152,6 +216,44 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   deleteButtonText: {
+    color: '#fff',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // Add a semi-transparent background
+  },
+  card: {
+    width: '80%',
+    padding: 20,
+    backgroundColor: '#fff',
+    borderRadius: 15,
+  },
+  modalText: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  modalActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 10,
+    borderRadius: 15,
+  },
+  confirmButton: {
+    backgroundColor: '#FF3B30',
+    paddingHorizontal: 20,
+  },
+  confirmButtonText: {
+    color: '#fff',
+  },
+  cancelButton: {
+    backgroundColor: '#aaa',
+    paddingHorizontal: 20,
+  },
+  cancelButtonText: {
     color: '#fff',
   },
 });

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using backend.Models;
 using backend.GlobalVar;
 using backend.Services;
+
 namespace backend.Controllers
 {
     [ApiController]
@@ -11,15 +12,16 @@ namespace backend.Controllers
     {
         private readonly MongoClient dbClient = GlobalVariables.DbClient;
         private readonly JwtTokenService _jwtTokenService;
-        
-        public Register(JwtTokenService jwtTokenService){
+
+        public Register(JwtTokenService jwtTokenService)
+        {
             _jwtTokenService = jwtTokenService;
         }        
-        
+
         [HttpPost]
-        public ActionResult<RegisterData> RegisterUser([FromBody] RegisterData data)
+        public ActionResult<object> RegisterUser([FromBody] RegisterData data)
         {   
-            if (data == null||
+            if (data == null ||
                 string.IsNullOrEmpty(data.Email) ||
                 string.IsNullOrEmpty(data.Username) ||
                 string.IsNullOrEmpty(data.Password) ||
@@ -29,24 +31,23 @@ namespace backend.Controllers
                 return BadRequest("Invalid Data");
             }
         
-            //Get the database
             var db = dbClient.GetDatabase("MainDB");
-            //Get the collection
             var collection = db.GetCollection<RegisterData>("Users");
 
-            // Verify the email is not already registered
-            var user = collection.Find(x => x.Email == data.Email).FirstOrDefault();
-            if (user != null)
+            // Verify if email is already registered
+            var existingUser = collection.Find(x => x.Email == data.Email).FirstOrDefault();
+            if (existingUser != null)
             {
                 return BadRequest("Email already exists");
             }
 
             // Hash the password
-            try {
+            try
+            {
                 string hashedPassword = BCrypt.Net.BCrypt.HashPassword(data.Password);
 
-                // Create a new instance of the RegisterData
-                var userdata = new RegisterData {
+                var userdata = new RegisterData
+                {
                     Email = data.Email,
                     Username = data.Username,
                     Password = hashedPassword,
@@ -55,19 +56,25 @@ namespace backend.Controllers
                     ProfilePic = data.ProfilePic
                 };
                 
-                
                 // Generate a JWT token
                 var token = _jwtTokenService.GenerateJwtToken(data.Username);
 
-                if (!string.IsNullOrEmpty(token)){
+                if (!string.IsNullOrEmpty(token))
+                {
                     // Create the user in the database
                     collection.InsertOne(userdata);
-                    return Ok(token);
-                }else{
+
+                    // Return token and user info
+                    return Ok(new { Token = token});
+                }
+                else
+                {
                     return BadRequest("Failed to generate token, please try again");
                 }
-            }catch (Exception e) {
-                return BadRequest(e.Message);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, $"Internal server error: {e.Message}");
             }
         }
     }

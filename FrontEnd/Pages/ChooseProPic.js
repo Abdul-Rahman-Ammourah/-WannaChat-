@@ -31,7 +31,7 @@ export default function ChooseProPic({ route,navigation  }) {
         setUserProfilePic(selectedPic.path);
         const keyPair = await End2End.generateKey();
         const encryptedPrivateKey = End2End.encryptPrivateKey(keyPair.private, user.password);
-        const response = await register(user.email, user.username, user.password, keyPair.public, encryptedPrivateKey, userProfilePic);
+        const response = await register(user.email, user.username, user.password, keyPair.public, encryptedPrivateKey, selectedPic.path);
         setPrivateKey(keyPair.private);
         setSenderEmail(user.email);
         setUsername(user.username);

@@ -1,18 +1,11 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, SafeAreaView, ScrollView, TouchableWithoutFeedback, Keyboard, Alert } from 'react-native';
 import { Text, Button, Input } from '@rneui/themed';
-import AsyncStorageUtil from '../Services/AsyncStorage';
 // Validation
 import { RegisterValidation } from '../Services/InputValidation';
 // API
-import { register,validateDub } from '../API/api';
-// Context
-import { NavContext } from '../Context/Context';
-// End-to-End encryption
-import End2End from '../Services/End2End';
+import { validateDub } from '../API/api';
 export default function RegisterPage({ navigation }) {
-  const { setSenderEmail, setPrivateKey, setUsername, setIsLoggedIn, userProfilePic } = useContext(NavContext);
-
   const [user, setUser] = useState({
     email: '',
     username: '',
