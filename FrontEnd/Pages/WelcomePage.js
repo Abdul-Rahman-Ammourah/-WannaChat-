@@ -1,26 +1,31 @@
-import React, { useState, useRef,useContext } from 'react';
-import { View, StyleSheet, SafeAreaView, Animated, Keyboard, TouchableWithoutFeedback,Alert } from 'react-native';
+import React, { useState, useRef, useContext, useEffect } from 'react';
+import { View, StyleSheet, SafeAreaView, Animated, Keyboard, TouchableWithoutFeedback, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { Text, Button, Input } from '@rneui/themed';
 import { LoginValidation } from '../Services/InputValidation';
 import End2End from '../Services/End2End';
 import { login } from '../API/api';
 import { NavContext } from '../Context/Context';
 import AsyncStorageUtil from '../Services/AsyncStorage';
+import TipsDisplayer from '../Services/TipsDisplayer';
+
 const WelcomePage = ({ navigation }) => {
-  const { setSenderEmail, setPrivateKey, setUsername,setIsLoggedIn,setUserProfilePic,setToken } = useContext(NavContext);
+  const { setSenderEmail, setPrivateKey, setUsername, setIsLoggedIn, setUserProfilePic, setToken } = useContext(NavContext);
   const [showpass, setShowpass] = useState(true);
   const [showLoginForm, setShowLoginForm] = useState(false);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
   // Login form
   const [user, setUser] = useState({
     email: '',
     password: '',
   });
+
   // Handle invalid input
   const [stats, setStats] = useState({
     invalid: false,
     errorMessage: '',
   });
+
   const handleLoginTrans = () => {
     setShowLoginForm(true);
     Animated.timing(fadeAnim, {
@@ -29,6 +34,7 @@ const WelcomePage = ({ navigation }) => {
       useNativeDriver: true,
     }).start();
   };
+
   const handleLogin = async () => {
     const valid = LoginValidation(user.email, user.password);
     if (valid) {
@@ -43,12 +49,10 @@ const WelcomePage = ({ navigation }) => {
           setUserProfilePic(response.profilePic);
           setIsLoggedIn(true);
           setToken(response.token);
-          try
-          {
-            await AsyncStorageUtil.storeUserData(user.email, response.username, decryptedPrivateKey, user.password,response.profilePic);
+          try {
+            await AsyncStorageUtil.storeUserData(user.email, response.username, decryptedPrivateKey, user.password, response.profilePic);
             await AsyncStorageUtil.storeToken(response.token);
-          }catch(error)
-          {
+          } catch (error) {
             console.error('Error storing user data or token:', error);
           }
           navigation.navigate('HomePage');
@@ -58,15 +62,12 @@ const WelcomePage = ({ navigation }) => {
       } catch (error) {
         let errorMessage = 'An unexpected error occurred';
         if (error.response) {
-          // Check the error response data
           console.error('Login Error:', error.response.data);
           errorMessage = error.response.data.message || 'Login failed';
         } else if (error.request) {
-          // The request was made but no response was received
           console.error('No response from server:', error.request);
           errorMessage = 'No response from server';
         } else {
-          // Something happened in setting up the request that triggered an error
           console.error('Error setting up request:', error.message);
           errorMessage = 'Failed to send request';
         }
@@ -78,79 +79,79 @@ const WelcomePage = ({ navigation }) => {
       setStats({ ...stats, invalid: true, errorMessage: 'Invalid email or password format' });
     }
   };
-  
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-      <SafeAreaView style={styles.container}>
-        <View style={styles.content}>
-          <Text h1 style={styles.title}>WannaChat</Text>
-          
-          <Text style={styles.description}>Chat With Your Friends, Securely</Text>
-          
-          {!showLoginForm && (
-            <>
-              <Button
-                title="Login"
-                buttonStyle={styles.loginButton}
-                containerStyle={styles.buttonContainer}
-                onPress={handleLoginTrans}
-              />
-              
-              <Button
-                title="Register"
-                type="outline"
-                buttonStyle={styles.registerButton}
-                containerStyle={styles.buttonContainer}
-                titleStyle={styles.registerButtonText}
-                onPress={() => navigation.navigate('RegisterPage')}
-              />
-            </>
-          )}
-          
-          {showLoginForm && (
-            <Animated.View style={[styles.formContainer, { opacity: fadeAnim }]}>
-              {stats.invalid && <Text style={styles.invalid}>{stats.errorMessage || 'Email or password is incorrect'}</Text>}
-              <Input
-                placeholder="Enter email"
-                leftIcon={{ type: 'material', name: 'email' }}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                containerStyle={styles.inputContainer}
-                onChangeText={(text) => setUser({ ...user, email: text })}
-              />
-              <Input
-                placeholder="Enter password"
-                leftIcon={{ type: 'material', name: 'lock' }}
-                rightIcon={{ type: 'material-community', name: showpass ? 'eye' : 'eye-off' ,onPress: () => setShowpass(!showpass)} }
-                secureTextEntry={showpass}
-                containerStyle={styles.inputContainer}
-                onChangeText={(text) => setUser({ ...user, password: text })}
-              />
-              <Button
-                title="Sign In"
-                buttonStyle={styles.signInButton}
-                containerStyle={styles.buttonContainer}
-                onPress={handleLogin}
-              />
-              <Button
-                title="Create an account"
-                type="clear"
-                titleStyle={styles.createAccountText}
-                containerStyle={styles.createAccountContainer}
-                onPress={() => navigation.navigate('RegisterPage')}
-              />
-            </Animated.View>
-          )}
-          
-          <Text style={styles.terms}>
-            By using WannaChat, you agree to our Terms of Service and Privacy Policy.
-          </Text>
-          <Text style={styles.terms}>Created by: Abdul-Rahman Ammourah</Text>
-          
-        </View>
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}
+      keyboardVerticalOffset={Platform.select({ ios: 60, android: -10 })}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+        <SafeAreaView style={styles.container}>
+          <View style={styles.content}>
+            <Text h1 style={styles.title}>WannaChat</Text>
+            <Text style={styles.description}>Chat With Your Friends, Securely</Text>
+            {!showLoginForm && (
+              <>
+                <Button
+                  title="Login"
+                  buttonStyle={styles.loginButton}
+                  containerStyle={styles.buttonContainer}
+                  onPress={handleLoginTrans}
+                />
+                <Button
+                  title="Register"
+                  type="outline"
+                  buttonStyle={styles.registerButton}
+                  containerStyle={styles.buttonContainer}
+                  titleStyle={styles.registerButtonText}
+                  onPress={() => navigation.navigate('RegisterPage')}
+                />
+              </>
+            )}
+            {showLoginForm && (
+              <Animated.View style={[styles.formContainer, { opacity: fadeAnim }]}>
+                {stats.invalid && <Text style={styles.invalid}>{stats.errorMessage || 'Email or password is incorrect'}</Text>}
+                <Input
+                  placeholder="Enter email"
+                  leftIcon={{ type: 'material', name: 'email' }}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                  containerStyle={styles.inputContainer}
+                  onChangeText={(text) => setUser({ ...user, email: text })}
+                />
+                <Input
+                  placeholder="Enter password"
+                  leftIcon={{ type: 'material', name: 'lock' }}
+                  rightIcon={{ type: 'material-community', name: showpass ? 'eye' : 'eye-off', onPress: () => setShowpass(!showpass) }}
+                  secureTextEntry={showpass}
+                  containerStyle={styles.inputContainer}
+                  onChangeText={(text) => setUser({ ...user, password: text })}
+                />
+                <Button
+                  title="Sign In"
+                  buttonStyle={styles.signInButton}
+                  containerStyle={styles.buttonContainer}
+                  onPress={handleLogin}
+                />
+                <Button
+                  title="Create an account"
+                  type="clear"
+                  titleStyle={styles.createAccountText}
+                  containerStyle={styles.createAccountContainer}
+                  onPress={() => navigation.navigate('RegisterPage')}
+                />
+              </Animated.View>
+            )}
+            <Text style={styles.terms}>
+              By using WannaChat, you agree to our Terms of Service and Privacy Policy.
+            </Text>
+            <Text style={styles.terms}>Created by: Abdul-Rahman Ammourah</Text>
+            <TipsDisplayer />
+          </View>
+        </SafeAreaView>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 };
 

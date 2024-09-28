@@ -1,15 +1,28 @@
 {
-    "securityTips": [
-      "Use strong and unique passwords for each of your accounts.",
-      "Enable two-factor authentication (2FA) wherever possible.",
-      "Be cautious of phishing attempts and avoid clicking on suspicious links or attachments.",
-      "Keep your software, apps, and devices up to date to protect against vulnerabilities.",
-      "Avoid using public Wi-Fi for sensitive activities like online banking or logging into accounts.",
-      "Regularly review your privacy settings on social media and other platforms.",
-      "Use a password manager to store and generate strong passwords securely.",
-      "Log out of accounts when using shared or public devices.",
-      "Monitor your accounts regularly for any suspicious activity.",
-      "Backup important data and use encryption to protect sensitive information."
-    ]
-  }
-  
+  "securityTips": [
+    "Use strong passwords. No, 'password123' is not strong.",
+    "Enable 2FA. It's like having a bouncer for your accounts.",
+    "Watch out for phishing. Not every prince offering you money is legit.",
+    "Update your software.\nThink of it as watering your tech plants.",
+    "Avoid public Wi-Fi for banking.\nWould you shout your password in a cafe?",
+    "Check privacy settings.\n'Public' is good for parties, not for your data.",
+    "Use a password manager.\nIt's like a vault for your 73 secret codes.",
+    "Log out on public devices.\nUnless you want strangers liking cat memes.",
+    "Monitor accounts.\nSpot the Nigerian prince before grandma does.",
+    "Backup data.\nIt's like making photocopies of your digital homework.",
+    "Avoid sketchy downloads.\nIf it looks like a bad 90s ad, run!",
+    "Turn off Bluetooth when not needed.\nStop broadcasting your location.",
+    "No pet names for passwords.\nHackers don't care about Sparky.",
+    "Suspicious link?\nAsk your friend first—they might just need a hobby.",
+    "The 'Reply All' button is dangerous.\nSo are email scams.",
+    "Use a VPN.\nIt's like a cloaking device for your internet traffic.",
+    "Change passwords regularly.\nYour 2010 MySpace password? Yeah, ditch it.",
+    "Cover your webcam.\nUnless you want hackers watching your karaoke sessions.",
+    "Use different passwords.\nIf one cracks, don't let them all fall like dominoes.",
+    "Clear your browser history.\nYour online shopping spree is no one else's business!",
+    "Don't trust free USBs.\nThey could be like candy from strangers—dangerous.",
+    "Disable auto-fill for sensitive info.\nLet's not make it too easy for the bad guys.",
+    "Set up alerts for account activity.\nKnow when your digital world gets weird.",
+    "Turn off location sharing.\nThe world doesn't need to know you're at Taco Bell."
+  ]
+}
