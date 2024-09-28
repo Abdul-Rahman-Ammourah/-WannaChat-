@@ -89,9 +89,10 @@ const useSignalR = (senderEmail) => {
       } catch (error) {
         console.error('Message send failed: ', error);
       }
+    } else {
+      console.error("Cannot send message: Connection is not established.");
     }
   };
-
   return { messages, sendMessage, isConnected, connectionId };
 };
 

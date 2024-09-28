@@ -87,6 +87,9 @@ export default function ChatPage({ navigation }) {
           <Icon name="arrow-back" size={32} color="#1E88E5" />
       </TouchableOpacity>
         <Text style={conID != "" ? styles.headerTitle : styles.headerTitleOffline}>{ChatUsername}</Text>
+      <TouchableOpacity onPress={() => navigation.navigate("CameraPage")}>
+          <Icon name="camera" size={32} color="#1E88E5" />
+      </TouchableOpacity>
       </View>
       {/* Message List */}
       <FlatList

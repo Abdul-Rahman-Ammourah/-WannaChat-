@@ -17,7 +17,7 @@ import RegisterPage from "./Pages/RegisterPage";
 import ProfilePage from "./Pages/ProfilePage";
 import Settings from "./Pages/SettingsPage";
 import ChooseProPic from "./Pages/ChooseProPic";
-
+import CameraPage from "./Pages/CameraPage";
 const Stack = createNativeStackNavigator();
 
 function MainNavigator() {
@@ -32,6 +32,7 @@ function MainNavigator() {
         <Stack.Screen name="Settings" component={Settings} />
         <Stack.Screen name="ProfilePage" component={ProfilePage} />
         <Stack.Screen name="ChatPage" component={ChatPage} /> 
+        <Stack.Screen name="CameraPage" component={CameraPage} />
       </>
       ):(
       <>

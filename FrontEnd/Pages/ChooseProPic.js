@@ -38,7 +38,7 @@ export default function ChooseProPic({ route,navigation  }) {
         setIsLoggedIn(true);
         try
         {
-          await AsyncStorageUtil.storeUserData(user.email, user.username, keyPair.private, user.password,userProfilePic);
+          await AsyncStorageUtil.storeUserData(user.email, user.username, keyPair.private, user.password,selectedPic.path);
           await AsyncStorageUtil.storeToken(response.token);
         }catch(error)
         {
