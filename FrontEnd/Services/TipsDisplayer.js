@@ -16,7 +16,7 @@ export default function TipsDisplayer() {
           getRandomTip();
       
           // Optional: Update the tip every few seconds (e.g., every 5 seconds)
-          const interval = setInterval(getRandomTip, 3500);
+          const interval = setInterval(getRandomTip, 4200);
       
           // Cleanup interval on component unmount
           return () => clearInterval(interval);
