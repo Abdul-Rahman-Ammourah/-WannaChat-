@@ -25,7 +25,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateIssuerSigningKey = true,
             ValidIssuer = jwtSettings["Issuer"],
             ValidAudience = jwtSettings["Audience"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? ""))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"] ?? "")),
         };
 
         // For SignalR JWT authentication
@@ -37,7 +37,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 var accessToken = context.Request.Query["access_token"];
                 var path = context.HttpContext.Request.Path;
 
-                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/Chathub"))
+                // Check for both "/Chathub" and "/Videohub"
+                if (!string.IsNullOrEmpty(accessToken) && 
+                    (path.StartsWithSegments("/Chathub") || path.StartsWithSegments("/Videohub")))
                 {
                     context.Token = accessToken;
                 }
@@ -46,6 +48,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             }
         };
     });
+
 
 builder.Services.AddAuthorization();
 // Add SignalR service
@@ -70,5 +73,6 @@ app.MapControllers();
 
 // Map the SignalR hub and protect it with authentication
 app.MapHub<Chathub>("/Chathub").RequireAuthorization();
+app.MapHub<VideoHub>("/Videohub").RequireAuthorization();
 
 app.Run();

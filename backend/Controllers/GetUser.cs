@@ -22,7 +22,6 @@ namespace backend.Controllers
 
             var db = dbClient.GetDatabase("MainDB");
             var collection = db.GetCollection<RegisterData>("Users");
-
             // Find the user by email
             var filter = Builders<RegisterData>.Filter.Eq(user => user.Email, Email);
             var user = collection.Find(filter).FirstOrDefault();  // Use FirstOrDefault() to get a single result

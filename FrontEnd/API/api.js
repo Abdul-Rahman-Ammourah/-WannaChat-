@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { Slider } from '@rneui/themed'
 
 const api = axios.create({
   baseURL: 'https://charming-hornet-finally.ngrok-free.app', 
@@ -101,5 +102,13 @@ export const deleteUser = async (email) => {
   }catch(error){
     console.error('Delete User Error:',error)
     throw error;
+  }
+}
+export const GetUsersData = async () => {
+  try{
+    const response = await api.get('/GetAllUsers')
+    return response
+  }catch(error){
+    console.error('Erorr while Getting users data',error)
   }
 }

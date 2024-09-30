@@ -13,7 +13,6 @@ export default function ChatPage({ navigation }) {
   const [newMessage, setNewMessage] = useState('');
   const flatListRef = useRef(null);
   const { messages, sendMessage: sendSignalRMessage, isConnected, connectionId } = useSignalR(senderEmail);
-
   // Handle send message
   const handleSendMessage = () => {
     if (newMessage.trim()) {
@@ -78,7 +77,6 @@ export default function ChatPage({ navigation }) {
       <Text style={styles.messageText}>{item.message}</Text>
     </View>
   );
-
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
@@ -178,7 +176,7 @@ const styles = StyleSheet.create({
   },
   receivedMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: '#fff',
+    backgroundColor: 'lightgrey',
   },
   messageText: {
     fontSize: 16,

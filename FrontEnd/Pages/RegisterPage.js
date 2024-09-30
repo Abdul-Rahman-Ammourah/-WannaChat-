@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
   },
   tipsContainer: {
     position: 'absolute',
-    bottom: 20,
+    bottom: -50,
     left: 0,
     right: 0,
     justifyContent: 'center',
