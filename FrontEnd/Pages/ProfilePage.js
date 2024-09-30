@@ -92,6 +92,7 @@ export default function ProfilePage({ navigation }) {
     try {
       await AsyncStorageUtil.clearUserData();
       await AsyncStorageUtil.clearToken();
+      await AsyncStorageUtil.clearContacts();
     } catch (error) {
       console.error('Error clearing storage:', error);
     }
