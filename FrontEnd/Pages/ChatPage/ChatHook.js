@@ -54,7 +54,7 @@ const useSignalR = (senderEmail) => {
           // Call it once immediately
           await getReceiverConnectionId();
 
-          // Set up a recurring call every 1000ms (1 second)
+          // Set up a recurring call every 2000ms (2 second)
           const intervalId = setInterval(async () => {
             await getReceiverConnectionId();
           }, 2000);
@@ -89,9 +89,10 @@ const useSignalR = (senderEmail) => {
       } catch (error) {
         console.error('Message send failed: ', error);
       }
+    } else {
+      console.error("Cannot send message: Connection is not established.");
     }
   };
-
   return { messages, sendMessage, isConnected, connectionId };
 };
 

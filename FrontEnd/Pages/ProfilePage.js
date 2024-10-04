@@ -7,6 +7,8 @@ import { NavContext } from '../Context/Context';
 import { validateUser, updateUser } from '../API/api';
 import ProfilePopup from '../CustomComponent/ProfilePopUp';
 import { EmailCheck,UsernameCheck } from '../Services/InputValidation';
+// AsyncStorage
+import AsyncStorageUtil from '../Services/AsyncStorage';
 // Profile Pictures
 const profilePics = [
   { id: 1, path: require("../Assets/ProfilePicSet/ProfileSet3.jpg") },
@@ -18,7 +20,7 @@ const profilePics = [
 ];
 
 export default function ProfilePage({ navigation }) {
-  const { senderEmail, Username, setPrivateKey, setUsername, setSenderEmail, userProfilePic, setUserProfilePic, setToken,setIsLoggedIn } = useContext(NavContext);
+  const { senderEmail, Username, setPrivateKey, setUsername, setSenderEmail, userProfilePic, setUserProfilePic, setToken,setIsLoggedIn,privateKey } = useContext(NavContext);
   const [editedData, setEditedData] = useState({
     Email: '',
     username: '',
@@ -31,37 +33,43 @@ export default function ProfilePage({ navigation }) {
     Email: false,
     username: false,
   });
-  const handleSave = async ( pass ) => {
+  const handleSave = async (pass) => {
     if (pass === '') {
-      console.log(senderEmail,editedData.Email,editedData.username,selectedPic.path, pass)
-      return
+        return;
     }
-    try{
-      console.log(senderEmail,editedData.Email,editedData.username,selectedPic.path, pass)
-      const responce = await validateUser(senderEmail,pass);
-      if (responce.data) {
-        try{
-          const res = await updateUser(senderEmail,editedData.Email,editedData.username,selectedPic.path);
-          if (res) {
-            setUserProfilePic(selectedPic.path);
-            setUsername(editedData.username);
-            setSenderEmail(editedData.Email);
-            setIsEditing(false);
-            setShowPassVal(false);
-            setEditedData({});
-          }
-        }catch(error){
-          console.log("Error while updating",error);
+    try {
+        const response = await validateUser(senderEmail, pass);
+        if (response) {
+            try {
+                const res = await updateUser(senderEmail, editedData.Email, editedData.username, selectedPic?.path);
+                if (res) {
+                    setUserProfilePic(selectedPic?.path);  
+                    setUsername(editedData.username);
+                    setSenderEmail(editedData.Email); 
+
+                    setIsEditing(false);
+                    setShowPassVal(false);
+                    setEditedData({
+                        Email: '',
+                        username: '',
+                    });
+                    try {
+                        await AsyncStorageUtil.storeUserData(editedData.Email, editedData.username, privateKey, pass, selectedPic?.path);
+                    } catch (error) {
+                        console.log("Error while Storing Data", error);
+                    }
+                }
+            } catch (error) {
+                console.log("Error while updating", error);
+            }
+        } else {
+            Alert.alert("Wrong Password", "Please Enter Correct Password");
         }
-        
-      }else{
-        Alert.alert("Wrong Password","Please Enter Correct Password");
-      }
-    }catch(error){
-      console.log("error",error);
+    } catch (error) {
+        console.log("error", error);
     }
-    
-  };
+};
+
   const handlesubmit = () => {
     if (EmailCheck(editedData.Email)) {
         if (UsernameCheck(editedData.username)) {
@@ -74,14 +82,21 @@ export default function ProfilePage({ navigation }) {
     }
 };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setPrivateKey('');
     setUsername('');
     setSenderEmail('');
     setUserProfilePic('');
     setToken('');
     setIsLoggedIn(false);
-    navigation.navigate('WelcomePage');
+    try {
+      await AsyncStorageUtil.clearUserData();
+      await AsyncStorageUtil.clearToken();
+      await AsyncStorageUtil.clearContacts();
+    } catch (error) {
+      console.error('Error clearing storage:', error);
+    }
+    setTimeout(() => navigation.navigate('WelcomePage'), 1500);
   };
 
   return (

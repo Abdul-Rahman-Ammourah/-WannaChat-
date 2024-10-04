@@ -63,5 +63,33 @@ class AsyncStorageUtil {
       throw error;
     }
   }
+  static async storeContacts(contacts){
+    try{
+      await AsyncStorage.setItem('Contacts',JSON.stringify(contacts))
+    }catch(error){
+      console.error("Error while storing contacts",error)
+    }
+  }
+  static async getContacts() {
+    try {
+      const contacts = await AsyncStorage.getItem('Contacts');
+      if (contacts !== null) {
+        return JSON.parse(contacts);
+      }
+      console.log('No contacts found in storage');
+      return [];
+    } catch (error) {
+      console.error("Error while getting contacts:", error);
+    }
+  }
+  
+  static async clearContacts(){
+    try{
+      await AsyncStorage.removeItem('Contacts')
+    }catch(error){
+      console.error("Error while clearing contacts",error)
+    }
+  }
 }
+
 export default AsyncStorageUtil;
