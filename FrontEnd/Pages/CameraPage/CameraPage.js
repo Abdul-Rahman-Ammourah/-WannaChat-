@@ -44,7 +44,7 @@ const CameraPage = ({ navigation }) => {
     };
 
     initCall();
-
+    console.log("Hello world")
     return () => {
       localStream.current?.getTracks().forEach((track) => track.stop());
       peerConnection.current?.close();
