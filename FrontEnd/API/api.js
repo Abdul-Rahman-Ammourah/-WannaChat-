@@ -1,8 +1,7 @@
 import axios from 'axios';
-import { Slider } from '@rneui/themed'
 
 const api = axios.create({
-  baseURL: 'https://charming-hornet-finally.ngrok-free.app', 
+  baseURL: 'https://wannachat.fly.dev', 
   timeout: 4000,  
 });
 
