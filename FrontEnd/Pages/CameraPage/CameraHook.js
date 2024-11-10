@@ -5,7 +5,7 @@ import { NavContext } from '../../Context/Context';
 export default function useSignalRVideo(peerConnection) {
   const { token, senderEmail, receiverEmail } = useContext(NavContext);
   const connectionRef = useRef(null);
-  const serverURL = 'https://charming-hornet-finally.ngrok-free.app/Videohub';
+  const serverURL = 'https://wannachat.fly.dev/Videohub';
 
   useEffect(() => {
     // Create the SignalR connection

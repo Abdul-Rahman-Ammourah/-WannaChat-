@@ -8,7 +8,7 @@ WannaChat is a secure, real-time messaging application designed with end-to-end 
 - **Token-Based Authentication:** Secure user authentication using tokens.
 - **Real-Time Messaging:** Instant message delivery and updates using WebSockets and SignalR.
 - **Interactive UI:** Modern and engaging user interface for an enhanced messaging experience.
-
+- **Deployed on Fly.io:**
 ## Tech Stack
 
 - **Frontend:** React Native

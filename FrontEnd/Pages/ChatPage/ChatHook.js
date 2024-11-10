@@ -6,7 +6,7 @@ import End2End from '../../Services/End2End';
 const useSignalR = (senderEmail) => {
   const { setConID, receiverEmail, publicKey,token } = useContext(NavContext);
 
-  const serverUrl = 'https://charming-hornet-finally.ngrok-free.app/Chathub';
+  const serverUrl = 'https://wannachat.fly.dev/Chathub';
   const [connection, setConnection] = useState(null);
   const [messages, setMessages] = useState([]);
   const [isConnected, setIsConnected] = useState(false);
