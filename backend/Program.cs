@@ -38,8 +38,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 var path = context.HttpContext.Request.Path;
 
                 // Check for both "/Chathub" and "/Videohub"
-                if (!string.IsNullOrEmpty(accessToken) && 
-                    (path.StartsWithSegments("/Chathub") || path.StartsWithSegments("/Videohub")))
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/Chathub"))
                 {
                     context.Token = accessToken;
                 }
@@ -73,6 +72,5 @@ app.MapControllers();
 
 // Map the SignalR hub and protect it with authentication
 app.MapHub<Chathub>("/Chathub").RequireAuthorization();
-app.MapHub<VideoHub>("/Videohub").RequireAuthorization();
 
 app.Run();

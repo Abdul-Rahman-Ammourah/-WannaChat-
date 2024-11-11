@@ -15,7 +15,7 @@ export default function HomePage({ navigation}) {
   const [users, setUsers] = useState([]);
   const [addUserVisible, setAddUserVisible] = useState(false);
   const [profileCardVisible, setProfileCardVisible] = useState(false);
-  const [selectedUser, setSelectedUser] = useState(null); // For managing the selected user for profile card
+  const [selectedUser, setSelectedUser] = useState(null); 
   const [allUsers, setAllUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [filteredAllUsers, setFilteredAllUsers] = useState([]);
