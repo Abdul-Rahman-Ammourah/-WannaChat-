@@ -164,6 +164,7 @@ export default function HomePage({ navigation}) {
     try{
       await AsyncStorageUtil.clearContacts();
       await AsyncStorageUtil.storeContacts(updatedUsers);
+      setShowHeaderOptions(false)
     }catch(error){
       console.error("Error whole Storing or clearing contacts", error)
     }
