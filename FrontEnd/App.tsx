@@ -12,11 +12,11 @@ import { NavProvider } from "./Context/Context";
 // New_UI_Pages
 import ChatPage from "./Pages/ChatPage/ChatPage";
 import HomePage from "./Pages/HomePage/HomePage";
-import WelcomePage from "./Pages/WelcomePage";
-import RegisterPage from "./Pages/RegisterPage";
-import ProfilePage from "./Pages/ProfilePage";
-import Settings from "./Pages/SettingsPage";
-import ChooseProPic from "./Pages/ChooseProPic";
+import WelcomePage from "./Pages/WelcomePage/WelcomePage";
+import RegisterPage from "./Pages/RegisterPage/RegisterPage";
+import ProfilePage from "./Pages/ProfilePage/ProfilePage";
+import Settings from "./Pages/SettingsPage/SettingsPage";
+import ChooseProPic from "./Pages/ProfilePage/ChooseProPic";
 const Stack = createNativeStackNavigator();
 
 function MainNavigator() {

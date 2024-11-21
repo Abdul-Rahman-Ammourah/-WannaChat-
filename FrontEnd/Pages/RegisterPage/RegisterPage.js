@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, SafeAreaView, ScrollView, TouchableWithoutFeedback, Keyboard, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { Text, Button, Input } from '@rneui/themed';
-import TipsDisplayer from '../Services/TipsDisplayer';
+import TipsDisplayer from '../../Services/TipsDisplayer';
+import { styles } from '../Styles/RegisterPage';
 // Validation
-import { RegisterValidation } from '../Services/InputValidation';
+import { RegisterValidation } from '../../Services/InputValidation';
 // API
-import { validateDub } from '../API/api';
+import { validateDub } from '../../API/api';
 
 export default function RegisterPage({ navigation }) {
   const [user, setUser] = useState({
@@ -136,44 +137,3 @@ export default function RegisterPage({ navigation }) {
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f0f8ff',
-  },
-  scrollView: {
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
-  content: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  title: {
-    color: '#1E88E5',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  buttonContainer: {
-    width: '25%',
-    borderRadius: 25,
-    marginVertical: 10,
-  },
-  registerButton: {
-    backgroundColor: '#1E88E5',
-    borderRadius: 25,
-    paddingVertical: 15,
-  },
-  backButtonText: {
-    color: '#1E88E5',
-  },
-  tipsContainer: {
-    position: 'absolute',
-    bottom: -50,
-    left: 0,
-    right: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
